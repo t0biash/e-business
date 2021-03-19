@@ -3,9 +3,14 @@ FROM ubuntu:18.04
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
-RUN apt-get update 
-RUN apt-get install -y wget npm vim zip unzip
+RUN apt-get update
+RUN apt-get install -y wget vim zip unzip curl
+
 RUN apt-get install -y openjdk-8-jdk
+
+RUN curl -sL https://deb.nodesource.com/setup_15.x | bash
+RUN apt-get install -y nodejs
+RUN npm install -g npm@latest
 
 RUN wget https://downloads.lightbend.com/scala/2.12.12/scala-2.12.12.deb
 RUN dpkg -i scala-2.12.12.deb
