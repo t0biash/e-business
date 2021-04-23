@@ -1,0 +1,74 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# Products
+GET     /products                                              controllers.ProductsController.getByCategoryId(categoryId: Long ?= -1)
+GET     /products/:id                                          controllers.ProductsController.getById(id: Long)
+POST    /products                                              controllers.ProductsController.create()
+PATCH   /products/:id                                          controllers.ProductsController.update(id: Long)
+DELETE  /products/:id                                          controllers.ProductsController.delete(id: Long)
+# Categories
+GET     /categories                                            controllers.CategoriesController.getAll()
+GET     /categories/:id                                        controllers.CategoriesController.getById(id: Long)
+POST    /categories                                            controllers.CategoriesController.create()
+PATCH   /categories/:id                                        controllers.CategoriesController.update(id: Long)
+DELETE  /categories/:id                                        controllers.CategoriesController.delete(id: Long)
+# Product comments
+GET     /comments                                              controllers.ProductCommentsController.getByProductId(productId: Long ?= -1)
+GET     /comments/:id                                          controllers.ProductCommentsController.getById(id: Long)
+POST    /products/:productId/comments                          controllers.ProductCommentsController.create(productId: Long)
+PATCH   /comments/:id                                          controllers.ProductCommentsController.update(id: Long)
+DELETE  /comments/:id                                          controllers.ProductCommentsController.delete(id: Long)
+# Promotions
+GET     /promotions                                            controllers.PromotionsController.getByProductId(productId: Long ?= -1)
+GET     /promotions/:id                                        controllers.PromotionsController.getById(id: Long)
+POST    /products/:productId/promotions                        controllers.PromotionsController.create(productId: Long)
+PATCH   /promotions/:id                                        controllers.PromotionsController.update(id: Long)
+DELETE  /promotions/:id                                        controllers.PromotionsController.delete(id: Long)
+# Users
+GET     /users                                                 controllers.UsersController.getAll()
+GET     /users/:id                                             controllers.UsersController.getById(id: Long)
+POST    /users                                                 controllers.UsersController.create()
+PATCH   /users/:id                                             controllers.UsersController.update(id: Long)
+DELETE  /users/:id                                             controllers.UsersController.delete(id: Long)
+# Orders
+GET     /orders                                                controllers.OrdersController.getByUserId(userId: Long ?= -1)
+GET     /orders/:id                                            controllers.OrdersController.getById(id: Long)
+POST    /users/:userId/orders                                  controllers.OrdersController.create(userId: Long)
+PATCH   /orders/:id                                            controllers.OrdersController.update(id: Long)
+DELETE  /orders/:id                                            controllers.OrdersController.delete(id: Long)
+# Payments
+GET     /payments                                              controllers.PaymentsController.getByUserId(userId: Long ?= -1)
+GET     /payments/:id                                          controllers.PaymentsController.getById(id: Long)
+POST    /users/:userId/payments                                controllers.PaymentsController.create(userId: Long)
+PATCH   /payments/:id                                          controllers.PaymentsController.update(id: Long)
+DELETE  /payments/:id                                          controllers.PaymentsController.delete(id: Long)
+# Car makes
+GET     /car-makes                                             controllers.CarMakesController.getAll()
+GET     /car-makes/:id                                         controllers.CarMakesController.getById(id: Long)
+POST    /car-makes                                             controllers.CarMakesController.create()
+PATCH   /car-makes/:id                                         controllers.CarMakesController.update(id: Long)
+DELETE  /car-makes/:id                                         controllers.CarMakesController.delete(id: Long)
+# Car models
+GET     /car-models                                            controllers.CarModelsController.getByCarMake(carMakeId: Long ?= -1)
+GET     /car-models/:id                                        controllers.CarModelsController.getById(id: Long)
+POST    /car-makes/:carMakeId/car-models                       controllers.CarModelsController.create(carMakeId: Long)
+PATCH   /car-models/:id                                        controllers.CarModelsController.update(id: Long)
+DELETE  /car-models/:id                                        controllers.CarModelsController.delete(id: Long)
+# Engines
+GET     /engines                                               controllers.EnginesController.getByCarModel(carModelId: Long ?= -1)
+GET     /engines/:id                                           controllers.EnginesController.getById(id: Long)
+POST    /car-models/:carModelId/engines                        controllers.EnginesController.create(carModelId: Long)
+PATCH   /engines/:id                                           controllers.EnginesController.update(id: Long)
+DELETE  /engines/:id                                           controllers.EnginesController.delete(id: Long)
+# Parts manufacturers
+GET     /parts-manufacturers                                   controllers.PartsManufacturersController.getAll()
+GET     /parts-manufacturers/:id                               controllers.PartsManufacturersController.getById(id: Long)
+POST    /parts-manufacturers                                   controllers.PartsManufacturersController.create()
+PATCH   /parts-manufacturers/:id                               controllers.PartsManufacturersController.update(id: Long)
+DELETE  /parts-manufacturers/:id                               controllers.PartsManufacturersController.delete(id: Long)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                                          controllers.Assets.versioned(path="/public", file: Asset)

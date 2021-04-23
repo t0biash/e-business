@@ -1,0 +1,11 @@
+version: '3'
+services:
+  ebusiness:
+    build: .
+    ports:
+      - 9000:9000
+      - 3000:3000
+    volumes:
+      - .:/home/user/ebusiness/
+    working_dir: /home/user/ebusiness
+    command: bash -c "sbt run"
