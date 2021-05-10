@@ -1,0 +1,19 @@
+@import forms.UpdatePromotionData
+@import helper._
+
+@(promotion: Form[UpdatePromotionData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.PromotionsController.updateFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@promotion("id").value" type="hidden">
+    <input name="productId" id="productId" value="@promotion("productId").value" type="hidden">
+    <input type="number" name="percentage" id="percentage" value="@promotion("percentage").value" min="0" max="100">
+    @inputDate(promotion("fromDate"))
+    @inputDate(promotion("toDate"))
+
+    <div class="buttons">
+        <input type="submit" value="Update Promotion">
+    </div>
+}

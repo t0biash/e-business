@@ -1,0 +1,18 @@
+@import forms.UpdateOrderData
+@import helper._
+
+@(order: Form[UpdateOrderData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.OrdersController.updateFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@order("id").value" type="hidden">
+    <input name="userId" id="userId" value="@order("userId").value" type="hidden">
+    <input name="paymentId" id="paymentId" value="@order("paymentId").value" type="hidden">
+    @inputDate(order("date"))
+
+    <div class="buttons">
+        <input type="submit" value="Update Order">
+    </div>
+}

@@ -1,0 +1,17 @@
+@import forms.UpdateEngineData
+@import helper._
+
+@(engine: Form[UpdateEngineData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.EnginesController.updateFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@engine("id").value" type="hidden">
+    <input name="carModelId" id="carModelId" value="@engine("carModelId").value" type="hidden">
+    @inputText(engine("engine"))
+
+    <div class="buttons">
+        <input type="submit" value="Update Engine">
+    </div>
+}

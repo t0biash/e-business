@@ -1,0 +1,15 @@
+@import forms.CreateCarMakeData
+@import helper._
+
+@(carMake: Form[CreateCarMakeData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.CarMakesController.createFormHandle()) {
+    @helper.CSRF.formField
+    @inputText(carMake("name"))
+
+    <div class="buttons">
+        <input type="submit" value="Add CarMake"/>
+    </div>
+}

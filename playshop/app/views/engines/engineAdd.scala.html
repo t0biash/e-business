@@ -1,0 +1,20 @@
+@import forms.CreateEngineData
+@import helper._
+
+@(engine: Form[CreateEngineData], carModels: Seq[CarModel])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.EnginesController.createFormHandle()) {
+    @helper.CSRF.formField
+    <select name="carModelId" id="carModelId">
+    @for(carModel <- carModels){
+        <option value="@carModel.id">@carModel.name</option>
+    }
+    </select>
+    @inputText(engine("engine"))
+
+    <div class="buttons">
+        <input type="submit" value="Add Engine"/>
+    </div>
+}

@@ -1,0 +1,26 @@
+@import forms.CreateProductCommentData
+@import helper._
+
+@(productComment: Form[CreateProductCommentData], users: Seq[User], products: Seq[Product])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.ProductCommentsController.createFormHandle()) {
+    @helper.CSRF.formField
+    <select name="userId" id="userId">
+    @for(user <- users){
+        <option value="@user.id">@user.username</option>
+    }
+    </select>
+    <select name="productId" id="productId">
+    @for(product <- products){
+        <option value="@product.id">@product.name</option>
+    }
+    </select>
+    <input type="number" name="rate" id="rates" value="@productComment("rate").value" min="0" max="5">
+    @textarea(productComment("content"))
+
+    <div class="buttons">
+        <input type="submit" value="Add Product Comment">
+    </div>
+}

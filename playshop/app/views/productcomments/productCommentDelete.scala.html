@@ -1,0 +1,15 @@
+@import forms.DeleteProductCommentData
+@import helper._
+
+@(productComment: Form[DeleteProductCommentData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@form(routes.ProductCommentsController.deleteFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@productComment("id").value" type="hidden"><br/>
+    <input type="number" name="rate" id="rate" value="@productComment("rate").value" readonly><br/>
+    <textarea name="content" id="content" readonly>@productComment("content").value</textarea>
+
+    <div class="buttons">
+        <input type="submit" value="Delete Product Comment">
+    </div>
+}

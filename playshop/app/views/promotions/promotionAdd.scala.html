@@ -1,0 +1,22 @@
+@import forms.CreatePromotionData
+@import helper._
+
+@(promotion: Form[CreatePromotionData], products: Seq[Product])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.PromotionsController.createFormHandle()) {
+    @helper.CSRF.formField
+    <select name="productId" id="productId">
+    @for(product <- products){
+        <option value="@product.id">@product.name</option>
+    }
+    </select>
+    <input type="number" name="percentage" id="percentage" value="@promotion("percentage").value" min="0" max="100">
+    @inputDate(promotion("fromDate"))
+    @inputDate(promotion("toDate"))
+
+    <div class="buttons">
+        <input type="submit" value="Add Promotion">
+    </div>
+}

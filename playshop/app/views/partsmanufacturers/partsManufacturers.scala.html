@@ -1,0 +1,12 @@
+@(partsManufacturers: Seq[PartsManufacturer])(implicit flash: Flash)
+
+@flash.get("success").getOrElse("")
+<br/>
+
+@for(partsManufacturer <- partsManufacturers) {
+    <b>@partsManufacturer.name</b>
+    <a href="@controllers.routes.PartsManufacturersController.getByIdForm(partsManufacturer.id)">Details</a>
+    <a href="@controllers.routes.PartsManufacturersController.updateForm(partsManufacturer.id)">Edit</a>
+    <a href="@controllers.routes.PartsManufacturersController.deleteForm(partsManufacturer.id)">Delete</a><br/>
+}
+<a href="@controllers.routes.PartsManufacturersController.createForm()">Add</a><br/>

@@ -1,0 +1,16 @@
+@import forms.CreatePartsManufacturerData
+@import helper._
+
+@(partsManufacturer: Form[CreatePartsManufacturerData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.PartsManufacturersController.createFormHandle()) {
+    @helper.CSRF.formField
+    @inputText(partsManufacturer("name"))
+    @textarea(partsManufacturer("description"))
+
+    <div class="buttons">
+        <input type="submit" value="Add PartsManufacturer"/>
+    </div>
+}

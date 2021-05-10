@@ -1,0 +1,17 @@
+@(promotions: Seq[Promotion], product: Product)(implicit flash: Flash)
+
+@flash.get("success").getOrElse("")
+<br/>
+
+@for(promotion <- promotions) {
+    @if(product != null) {
+        <b>@product.name</b>
+    }
+    <b>@promotion.percentage %</b>
+    <b>@promotion.fromDate</b>
+    <b>@promotion.toDate</b>
+    <a href="@controllers.routes.PromotionsController.getByIdForm(promotion.id)">Details</a>
+    <a href="@controllers.routes.PromotionsController.updateForm(promotion.id)">Edit</a>
+    <a href="@controllers.routes.PromotionsController.deleteForm(promotion.id)">Delete</a><br/>
+}
+<a href="@controllers.routes.PromotionsController.createForm()">Add</a><br/>

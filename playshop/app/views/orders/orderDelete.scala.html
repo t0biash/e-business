@@ -1,0 +1,14 @@
+@import forms.DeleteOrderData
+@import helper._
+
+@(order: Form[DeleteOrderData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@form(routes.OrdersController.deleteFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@order("id").value" type="hidden"><br />
+    <input name="date" id="date" value="@order("date").value" type="date" readonly>
+
+    <div class="buttons">
+        <input type="submit" value="Delete Order">
+    </div>
+}

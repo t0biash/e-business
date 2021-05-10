@@ -1,0 +1,16 @@
+@(carModels: Seq[CarModel], carMake: CarMake)(implicit flash: Flash)
+
+@flash.get("success").getOrElse("")
+<br/>
+
+@for(carModel <- carModels) {
+    @if(carMake != null) {
+        <b>@carMake.name </b>
+    }
+    <b>@carModel.name</b>
+    <a href="@controllers.routes.CarModelsController.getByIdForm(carModel.id)">Details</a>
+    <a href="@controllers.routes.CarModelsController.updateForm(carModel.id)">Edit</a>
+    <a href="@controllers.routes.CarModelsController.deleteForm(carModel.id)">Delete</a><br/>
+}
+    <a href="@controllers.routes.CarModelsController.createForm()">Add</a>
+

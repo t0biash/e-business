@@ -80,14 +80,10 @@ create table "Payment" (
     "id" integer primary key,
     "provider" text not null,
     "amount" integer not null,
-    "completed" integer not null,
-    "userId" integer not null,
-    "orderId" integer not null,
-    foreign key(userId) references User(id),
-    foreign key(orderId) references UserOrder(id)
+    "completed" integer not null
 );
 
-create table "OrderProducts" (
+create table "OrderProduct" (
     "id" integer primary key,
     "quantity" integer not null,
     "orderId" integer not null,
@@ -108,4 +104,4 @@ drop table "Engine";
 drop table "ProductComment";
 drop table "Payment";
 drop table "Order";
-drop table "OrderProducts";
+drop table "OrderProduct";

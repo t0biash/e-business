@@ -1,0 +1,18 @@
+@import forms.DeletePromotionData
+@import helper._
+
+@(promotion: Form[DeletePromotionData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.PromotionsController.deleteFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@promotion("id").value" type="hidden"><br />
+    <input name="percentage" id="percentage" value="@promotion("percentage").value" type="number" readonly>
+    <input name="fromDate" id="fromDate" value="@promotion("fromDate").value" type="date" readonly>
+    <input name="toDate" id="toDate" value="@promotion("toDate").value" type="date" readonly>
+
+    <div class="buttons">
+        <input type="submit" value="Delete Promotion">
+    </div>
+}

@@ -20,7 +20,7 @@ class OrderRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val us
   private val user = TableQuery[UserTable]
   private val payment = TableQuery[PaymentTable]
 
-  class OrderTable(tag: Tag) extends Table[Order](tag, "Order") {
+  class OrderTable(tag: Tag) extends Table[Order](tag, "UserOrder") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def date = column[String]("date")
     def userId = column[Long]("userId")

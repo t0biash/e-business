@@ -1,0 +1,17 @@
+@import forms.UpdatePartsManufacturerData
+@import helper._
+
+@(partsManufacturer: Form[UpdatePartsManufacturerData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.PartsManufacturersController.updateFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@partsManufacturer("id").value" type="hidden" />
+    @inputText(partsManufacturer("name"))
+    @textarea(partsManufacturer("description"))
+
+    <div class="buttons">
+        <input type="submit" value="Update PartsManufacturer"/>
+    </div>
+}

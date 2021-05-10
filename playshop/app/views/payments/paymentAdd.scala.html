@@ -1,0 +1,20 @@
+@import forms.CreatePaymentData
+@import helper._
+
+@(payment: Form[CreatePaymentData], paymentProviders: Seq[String], orderId: Long)(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.PaymentsController.createFormHandle(orderId)) {
+    @helper.CSRF.formField
+    <select name="provider" id="provider">
+    @for(paymentProvider <- paymentProviders){
+        <option value="@paymentProvider">@paymentProvider</option>
+    }
+    </select>
+    <input type="number" name="amount" id="amount" value="@payment("amount").value" min="0">
+
+    <div class="buttons">
+        <input type="submit" value="Add Payment">
+    </div>
+}

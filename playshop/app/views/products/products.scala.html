@@ -1,0 +1,15 @@
+@(products: Seq[Product], category: Category)(implicit flash: Flash)
+
+@flash.get("success").getOrElse("")
+<br/>
+
+@for(product <- products) {
+    @if(category != null) {
+        <b>@category.name</b>
+    }
+    <b>@product.name</b>
+    <a href="@controllers.routes.ProductsController.getByIdForm(product.id)">Details</a>
+    <a href="@controllers.routes.ProductsController.updateForm(product.id)">Edit</a>
+    <a href="@controllers.routes.ProductsController.deleteForm(product.id)">Delete</a><br/>
+}
+<a href="@controllers.routes.ProductsController.createForm()">Add</a><br/>

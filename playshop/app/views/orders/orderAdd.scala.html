@@ -1,0 +1,20 @@
+@import forms.CreateOrderData
+@import helper._
+
+@(order: Form[CreateOrderData], users: Seq[User])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.OrdersController.createFormHandle()) {
+    @helper.CSRF.formField
+    <select name="userId" id="userId">
+    @for(user <- users){
+        <option value="@user.id">@user.username</option>
+    }
+    </select>
+    @inputDate(order("date"))
+
+    <div class="buttons">
+        <input type="submit" value="Add Order">
+    </div>
+}

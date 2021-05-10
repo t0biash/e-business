@@ -1,0 +1,27 @@
+@import forms.CreateProductData
+@import helper._
+
+@(product: Form[CreateProductData], partsManufacturers: Seq[PartsManufacturer], categories: Seq[Category])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.ProductsController.createFormHandle()) {
+    @helper.CSRF.formField
+    <select name="categoryId" id="categoryId">
+    @for(category <- categories){
+        <option value="@category.id">@category.name</option>
+    }
+    </select>
+    <select name="partsManufacturerId" id="partsManufacturerId">
+    @for(partsManufacturer <- partsManufacturers){
+        <option value="@partsManufacturer.id">@partsManufacturer.name</option>
+    }
+    </select>
+    @inputText(product("name"))
+    @textarea(product("description"))
+    <input type="number" name="price" id="price" value="@product("price").value" min="0">
+
+    <div class="buttons">
+        <input type="submit" value="Add Product">
+    </div>
+}

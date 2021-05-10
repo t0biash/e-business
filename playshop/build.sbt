@@ -14,10 +14,11 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick-evolutions" % "5.0.0"
 )
 libraryDependencies += "org.xerial" % "sqlite-jdbc" % "3.34.0"
+
+resolvers += "Akka Snapshot Repository" at "https://repo.akka.io/snapshots/"
+resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.example.controllers._"
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
-
-resolvers += "scalaz-binary" at "https://dl.bintray.com/scalaz/releases"

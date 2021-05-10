@@ -1,0 +1,16 @@
+@import forms.DeletePartsManufacturerData
+@import helper._
+
+@(partsManufacturer: Form[DeletePartsManufacturerData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.PartsManufacturersController.deleteFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@partsManufacturer("id").value" type="hidden" /><br />
+    <input name="name" id="name" value="@partsManufacturer("name").value" type="text" readonly />
+
+    <div class="buttons">
+        <input type="submit" value="Delete PartsManufacturer"/>
+    </div>
+}

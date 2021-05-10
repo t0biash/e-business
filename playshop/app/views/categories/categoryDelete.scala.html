@@ -1,0 +1,16 @@
+@import forms.DeleteCategoryData
+@import helper._
+
+@(category: Form[DeleteCategoryData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.CategoriesController.deleteFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@category("id").value" type="hidden" /><br />
+    <input name="name" id="name" value="@category("name").value" type="text" readonly />
+
+    <div class="buttons">
+        <input type="submit" value="Delete Category"/>
+    </div>
+}

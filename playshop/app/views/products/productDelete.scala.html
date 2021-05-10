@@ -1,0 +1,14 @@
+@import forms.DeleteProductData
+@import helper._
+
+@(product: Form[DeleteProductData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@form(routes.ProductsController.deleteFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@product("id").value" type="hidden"><br />
+    <input name="engine" id="engine" value="@product("name").value" type="text" readonly>
+
+    <div class="buttons">
+        <input type="submit" value="Delete Product">
+    </div>
+}

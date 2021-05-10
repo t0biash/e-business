@@ -1,0 +1,21 @@
+@import forms.CreateCarModelData
+@import helper._
+
+@(carModel: Form[CreateCarModelData], carMakes: Seq[CarMake])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.CarModelsController.createFormHandle()) {
+    @helper.CSRF.formField
+    <select name="carMakeId" id="carMakeId">
+    @for(carMake <- carMakes){
+        <option value="@carMake.id">@carMake.name</option>
+    }
+    </select>
+    @inputText(carModel("name"))
+    @inputText(carModel("year"))
+
+    <div class="buttons">
+        <input type="submit" value="Add CarModel"/>
+    </div>
+}

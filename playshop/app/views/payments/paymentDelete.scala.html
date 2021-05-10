@@ -1,0 +1,16 @@
+@import forms.DeletePaymentData
+@import helper._
+
+@(payment: Form[DeletePaymentData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@form(routes.PaymentsController.deleteFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@payment("id").value" type="hidden"><br />
+    <input name="provider" id="provider" value="@payment("provider").value" type="text" readonly>
+    <input name="amount" id="amount" value="@payment("amount").value" type="number" readonly>
+    <input name="completed" id="completed" value="@payment("completed").value" type="checkbox" readonly>
+
+    <div class="buttons">
+        <input type="submit" value="Delete Payment">
+    </div>
+}

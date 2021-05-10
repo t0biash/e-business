@@ -1,0 +1,16 @@
+@import forms.DeleteEngineData
+@import helper._
+
+@(engine: Form[DeleteEngineData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.EnginesController.deleteFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@engine("id").value" type="hidden"><br />
+    <input name="engine" id="engine" value="@engine("engine").value" type="text" readonly>
+
+    <div class="buttons">
+        <input type="submit" value="Delete Engine">
+    </div>
+}

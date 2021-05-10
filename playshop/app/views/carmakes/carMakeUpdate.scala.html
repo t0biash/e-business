@@ -1,0 +1,16 @@
+@import forms.UpdateCarMakeData
+@import helper._
+
+@(carMake: Form[UpdateCarMakeData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.CarMakesController.updateFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@carMake("id").value" type="hidden" />
+    @inputText(carMake("name"))
+
+    <div class="buttons">
+        <input type="submit" value="Update CarMake"/>
+    </div>
+}

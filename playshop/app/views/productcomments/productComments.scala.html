@@ -1,0 +1,15 @@
+@(productComments: Seq[ProductComment], product: Product)(implicit flash: Flash)
+
+@flash.get("success").getOrElse("")
+<br/>
+
+@for(productComment <- productComments) {
+    @if(product != null) {
+        <b>@product.name</b>
+    }
+    <b>@productComment.content</b>
+    <a href="@controllers.routes.ProductCommentsController.getByIdForm(productComment.id)">Details</a>
+    <a href="@controllers.routes.ProductCommentsController.updateForm(productComment.id)">Edit</a>
+    <a href="@controllers.routes.ProductCommentsController.deleteForm(productComment.id)">Delete</a><br/>
+}
+<a href="@controllers.routes.ProductCommentsController.createForm()">Add</a><br/>

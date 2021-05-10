@@ -1,0 +1,16 @@
+@import forms.DeleteCarMakeData
+@import helper._
+
+@(carMake: Form[DeleteCarMakeData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@flash.get("success").getOrElse("")
+
+@form(routes.CarMakesController.deleteFormHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@carMake("id").value" type="hidden" /><br />
+    <input name="name" id="name" value="@carMake("name").value" type="text" readonly />
+
+    <div class="buttons">
+        <input type="submit" value="Delete CarMake"/>
+    </div>
+}
