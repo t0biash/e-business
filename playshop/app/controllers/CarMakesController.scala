@@ -1,7 +1,8 @@
 package controllers
 
-import forms.{CarMakeForms, DeleteCarMakeData, UpdateCarMakeData}
+import forms.{CarMakeForms, CreateCarMakeData, DeleteCarMakeData, UpdateCarMakeData}
 import models.CarMake
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
 import repositories.CarMakeRepository
 
@@ -10,25 +11,45 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CarMakesController @Inject()(cc: MessagesControllerComponents, val carMakeRepository: CarMakeRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
-  def create(): Action[AnyContent] = Action { implicit request =>
-
-    Ok("Create car make")
+  def create() = Action(parse.json) { request =>
+    val result = request.body.validate[CreateCarMakeData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      carMake => {
+        carMakeRepository.create(carMake.name)
+        Ok(Json.obj("message" -> (s"Car make ${carMake.name} created")))
+      }
+    )
   }
 
-  def getAll(): Action[AnyContent] = Action { implicit request =>
-    Ok("All car makes")
+  def getAll(): Action[AnyContent] = Action.async { implicit request =>
+    carMakeRepository.getAll().map(carMakes => Ok(Json.toJson(carMakes)))
   }
 
-  def getById(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Car make $id")
+  def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    carMakeRepository.getByIdOption(id).map(carMake => carMake match {
+      case Some(cm) => Ok(Json.toJson(cm))
+      case None => Redirect(routes.CarMakesController.getAll())
+    })
   }
 
-  def update(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Update car make $id")
+  def update(id: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[UpdateCarMakeData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      carMake => {
+        carMakeRepository.update(id, CarMake(id, carMake.name))
+        Ok(Json.obj("message" -> (s"Car make updated")))
+      }
+    )
   }
 
-  def delete(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Delete car make $id")
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    carMakeRepository.delete(id).map(_ => Ok(s"Car make $id deleted"))
   }
 
   def createForm(): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>

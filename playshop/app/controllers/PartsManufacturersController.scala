@@ -1,7 +1,8 @@
 package controllers
 
-import forms.{DeletePartsManufacturerData, PartsManufacturerForms, UpdatePartsManufacturerData}
+import forms.{CreatePartsManufacturerData, DeletePartsManufacturerData, PartsManufacturerForms, UpdatePartsManufacturerData}
 import models.PartsManufacturer
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.PartsManufacturerRepository
 
@@ -10,24 +11,45 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PartsManufacturersController @Inject()(cc: MessagesControllerComponents, val partsManufacturerRepository: PartsManufacturerRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
-  def create(): Action[AnyContent] = Action { implicit request =>
-    Ok("Create parts manufacturer")
+  def create() = Action(parse.json) { request =>
+    val result = request.body.validate[CreatePartsManufacturerData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      partsManufacturer => {
+        partsManufacturerRepository.create(partsManufacturer.name, partsManufacturer.description)
+        Ok(Json.obj("message" -> (s"Parts manufacturer ${partsManufacturer.name} created")))
+      }
+    )
   }
 
-  def getAll(): Action[AnyContent] = Action { implicit request =>
-    Ok("All parts manufacturers")
+  def getAll(): Action[AnyContent] = Action.async { implicit request =>
+    partsManufacturerRepository.getAll().map(partsManufacturers => Ok(Json.toJson(partsManufacturers)))
   }
 
-  def getById(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Parts manufacturer $id")
+  def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    partsManufacturerRepository.getByIdOption(id).map(partsManufacturer => partsManufacturer match {
+      case Some(pm) => Ok(Json.toJson(pm))
+      case None => Redirect(routes.PartsManufacturersController.getAll())
+    })
   }
 
-  def update(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Update parts manufacturer $id")
+  def update(id: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[UpdatePartsManufacturerData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      partsManufacturer => {
+        partsManufacturerRepository.update(id, PartsManufacturer(id, partsManufacturer.name, partsManufacturer.description))
+        Ok(Json.obj("message" -> (s"Parts manufacturer updated")))
+      }
+    )
   }
 
-  def delete(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Delete parts manufacturer $id")
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    partsManufacturerRepository.delete(id).map(_ => Ok(s"Parts manufacturer $id deleted"))
   }
 
   def createForm(): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>

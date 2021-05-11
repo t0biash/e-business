@@ -1,7 +1,8 @@
 package controllers
 
-import forms.{DeletePromotionData, PromotionForms, UpdatePromotionData}
+import forms.{CreatePromotionData, DeletePromotionData, PromotionForms, UpdatePromotionData}
 import models.Promotion
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{ProductRepository, PromotionRepository}
 
@@ -11,27 +12,48 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PromotionsController @Inject()(cc: MessagesControllerComponents, val promotionRepository: PromotionRepository, val productRepository: ProductRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
-  def create(productId: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Create product $productId promotion")
+  def create(productId: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[CreatePromotionData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      promotion => {
+        promotionRepository.create(promotion.percentage.floatValue(), promotion.fromDate.toString, promotion.toDate.toString, productId)
+        Ok(Json.obj("message" -> (s"Promotion created")))
+      }
+    )
   }
 
-  def getByProductId(productId: Long): Action[AnyContent] = Action { implicit request =>
+  def getByProductId(productId: Long): Action[AnyContent] = Action.async { implicit request =>
     if (productId == -1)
-      Ok("All promotions")
+      promotionRepository.getAll().map(promotions => Ok(Json.toJson(promotions)))
     else
-      Ok(s"All product $productId promotions")
+      promotionRepository.getByProductId(productId).map(promotions => Ok(Json.toJson(promotions)))
   }
 
-  def getById(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Promotion $id")
+  def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    promotionRepository.getByIdOption(id).map(promotion => promotion match {
+      case Some(p) => Ok(Json.toJson(p))
+      case None => Redirect(routes.PromotionsController.getByProductId())
+    })
   }
 
-  def update(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Update promotion $id")
+  def update(id: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[UpdatePromotionData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      promotion => {
+        promotionRepository.update(id, Promotion(id, promotion.percentage.floatValue(), promotion.fromDate.toString, promotion.toDate.toString, promotion.productId))
+        Ok(Json.obj("message" -> (s"Promotion promotion")))
+      }
+    )
   }
 
-  def delete(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Delete promotion $id")
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    promotionRepository.delete(id).map(_ => Ok(s"Promotion $id deleted"))
   }
 
   def createForm(): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>

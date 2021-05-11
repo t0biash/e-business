@@ -1,7 +1,8 @@
 package forms
 
 import play.api.data.Form
-import play.api.data.Forms.{bigDecimal, sqlDate, longNumber, mapping}
+import play.api.data.Forms.{bigDecimal, longNumber, mapping, sqlDate}
+import play.api.libs.json.Json
 
 import java.sql.Date
 
@@ -37,4 +38,12 @@ object PromotionForms {
       "toDate" -> sqlDate
     )(DeletePromotionData.apply)(DeletePromotionData.unapply)
   }
+}
+
+object CreatePromotionData {
+  implicit val jsonFormat = Json.format[CreatePromotionData]
+}
+
+object UpdatePromotionData {
+  implicit val jsonFormat = Json.format[UpdatePromotionData]
 }

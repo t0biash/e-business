@@ -1,7 +1,8 @@
 package controllers
 
-import forms.{CategoryForms, DeleteCategoryData, UpdateCategoryData}
+import forms.{CategoryForms, CreateCategoryData, DeleteCategoryData, UpdateCategoryData}
 import models.Category
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.CategoryRepository
 
@@ -10,24 +11,45 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CategoriesController @Inject()(cc: MessagesControllerComponents, val categoryRepository: CategoryRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
-  def create(): Action[AnyContent] = Action { implicit request =>
-    Ok("Create category")
+  def create() = Action(parse.json) { request =>
+    val result = request.body.validate[CreateCategoryData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      category => {
+        categoryRepository.create(category.name)
+        Ok(Json.obj("message" -> (s"Category ${category.name} created")))
+      }
+    )
   }
 
-  def getAll(): Action[AnyContent] = Action { implicit request =>
-    Ok("All categories")
+  def getAll(): Action[AnyContent] = Action.async { implicit request =>
+    categoryRepository.getAll().map(categories => Ok(Json.toJson(categories)))
   }
 
-  def getById(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Category $id")
+  def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    categoryRepository.getByIdOption(id).map(category => category match {
+      case Some(c) => Ok(Json.toJson(c))
+      case None => Redirect(routes.CategoriesController.getAll())
+    })
   }
 
-  def update(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Update category $id")
+  def update(id: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[UpdateCategoryData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      category => {
+        categoryRepository.update(id, Category(id, category.name))
+        Ok(Json.obj("message" -> (s"Category updated")))
+      }
+    )
   }
 
-  def delete(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Delete category $id")
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    categoryRepository.delete(id).map(_ => Ok(s"Category $id deleted"))
   }
 
   def createForm(): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>

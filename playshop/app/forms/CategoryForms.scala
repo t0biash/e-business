@@ -2,6 +2,7 @@ package forms
 
 import play.api.data.Form
 import play.api.data.Forms.{longNumber, mapping, nonEmptyText}
+import play.api.libs.json.Json
 
 case class CreateCategoryData(name: String)
 case class UpdateCategoryData(id: Long, name: String)
@@ -27,4 +28,12 @@ object CategoryForms {
       "name" -> nonEmptyText
     )(DeleteCategoryData.apply)(DeleteCategoryData.unapply)
   }
+}
+
+object CreateCategoryData {
+  implicit val jsonFormat = Json.format[CreateCategoryData]
+}
+
+object UpdateCategoryData {
+  implicit val jsonFormat = Json.format[UpdateCategoryData]
 }

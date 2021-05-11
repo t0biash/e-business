@@ -1,7 +1,8 @@
 package controllers
 
-import forms.{DeletePaymentData, PaymentForms, UpdatePaymentData}
+import forms.{CreatePaymentData, DeletePaymentData, PaymentForms, UpdatePaymentData}
 import models.{Order, Payment}
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{OrderRepository, PaymentRepository}
 
@@ -12,27 +13,45 @@ import scala.concurrent.{ExecutionContext, Future}
 class PaymentsController @Inject()(cc: MessagesControllerComponents, val paymentRepository: PaymentRepository, val orderRepository: OrderRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
   private val _paymentProviders: Seq[String] = List("PayPal", "Blik", "Western Union", "Bitcoin")
 
-  def create(orderId: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Create order $orderId payment")
+  def create(orderId: Long) = Action(parse.json).async { request =>
+    val result = request.body.validate[CreatePaymentData]
+    result.fold(
+      errors => {
+        Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
+      },
+      payment => {
+        paymentRepository.create(payment.provider, payment.amount, false).flatMap(payment => {
+          orderRepository.getById(orderId).map(order => {
+            orderRepository.update(orderId, Order(order.id, order.date, order.userId, payment.id))
+            Ok(Json.obj("message" -> ("Payment created")))
+          })
+        })
+      }
+    )
   }
 
-  def getByOrderId(orderId: Long): Action[AnyContent] = Action { implicit request =>
-    if (orderId == -1)
-      Ok("All payments")
-    else
-      Ok(s"All order $orderId payments")
+  def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    paymentRepository.getByIdOption(id).map(payment => payment match {
+      case Some(p) => Ok(Json.toJson(p))
+      case None =>  NotFound(s"Payment $id not found")
+    })
   }
 
-  def getById(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Payment $id")
+  def update(id: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[UpdatePaymentData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      payment => {
+        paymentRepository.update(id, Payment(id, payment.provider, payment.amount, payment.completed))
+        Ok(Json.obj("message" -> ("Payment updated")))
+      }
+    )
   }
 
-  def update(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Update payment $id")
-  }
-
-  def delete(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Delete payment $id")
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    paymentRepository.delete(id).map(_ => Ok(s"Payment $id deleted"))
   }
 
   def createForm(orderId: Long): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>

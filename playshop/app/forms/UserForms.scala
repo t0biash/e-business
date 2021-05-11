@@ -2,6 +2,7 @@ package forms
 
 import play.api.data.Form
 import play.api.data.Forms.{longNumber, mapping, nonEmptyText}
+import play.api.libs.json.Json
 
 case class CreateUserData(username: String, password: String)
 case class UpdateUserData(id: Long, username: String, password: String)
@@ -29,4 +30,12 @@ object UserForms {
       "username" -> nonEmptyText
     )(DeleteUserData.apply)(DeleteUserData.unapply)
   }
+}
+
+object CreateUserData {
+  implicit val jsonFormat = Json.format[CreateUserData]
+}
+
+object UpdateUserData {
+  implicit val jsonFormat = Json.format[UpdateUserData]
 }

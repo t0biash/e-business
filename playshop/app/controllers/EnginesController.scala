@@ -1,7 +1,8 @@
 package controllers
 
-import forms.{DeleteEngineData, EngineForms, UpdateEngineData}
+import forms.{CreateEngineData, DeleteEngineData, EngineForms, UpdateEngineData}
 import models.Engine
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{CarModelRepository, EngineRepository}
 
@@ -10,27 +11,49 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EnginesController @Inject()(cc: MessagesControllerComponents, val engineRepository: EngineRepository, val carModelRepository: CarModelRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
-  def create(carModelId: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Create car model $carModelId engine")
+  def create(carModelId: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[CreateEngineData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      engine => {
+        engineRepository.create(engine.engine, carModelId)
+        Ok(Json.obj("message" -> (s"Engine ${engine.engine} created")))
+      }
+    )
   }
 
-  def getByCarModel(carModelId: Long): Action[AnyContent] = Action { implicit request =>
+  def getByCarModel(carModelId: Long): Action[AnyContent] = Action.async { implicit request =>
     if (carModelId == -1)
-      Ok("All engines")
-    else
-      Ok(s"All car model $carModelId engines")
+      engineRepository.getAll().map(engines => Ok(Json.toJson(engines)))
+    else {
+      engineRepository.getByCarModelId(carModelId).map(engines => Ok(Json.toJson(engines)))
+    }
   }
 
-  def getById(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Engine $id")
+  def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    engineRepository.getByIdOption(id).map(engine => engine match {
+      case Some(e) => Ok(Json.toJson(e))
+      case None => Redirect(routes.EnginesController.getByCarModel())
+    })
   }
 
-  def update(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Update engine $id")
+  def update(id: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[UpdateEngineData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      engine => {
+        engineRepository.update(id, Engine(id, engine.engine, engine.carModelId))
+        Ok(Json.obj("message" -> (s"Engine updated")))
+      }
+    )
   }
 
-  def delete(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Delete engine $id")
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    engineRepository.delete(id).map(_ => Ok(s"Engine $id deleted"))
   }
 
   def createForm(): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>

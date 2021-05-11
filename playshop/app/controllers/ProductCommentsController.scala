@@ -1,7 +1,8 @@
 package controllers
 
-import forms.{DeleteProductCommentData, ProductCommentForms, UpdateProductCommentData}
+import forms.{CreateProductCommentData, DeleteProductCommentData, ProductCommentForms, UpdateProductCommentData}
 import models.ProductComment
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{ProductCommentRepository, ProductRepository, UserRepository}
 
@@ -10,27 +11,48 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ProductCommentsController @Inject()(cc: MessagesControllerComponents, val productCommentRepository: ProductCommentRepository, val productRepository: ProductRepository, val userRepository: UserRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
-  def create(productId: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Create product $productId comment")
+  def create(productId: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[CreateProductCommentData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      productComment => {
+        productCommentRepository.create(productComment.rate, productComment.content, productComment.userId, productId)
+        Ok(Json.obj("message" -> (s"Product comment created")))
+      }
+    )
   }
 
-  def getByProductId(productId: Long): Action[AnyContent] = Action { implicit request =>
+  def getByProductId(productId: Long): Action[AnyContent] = Action.async { implicit request =>
     if (productId == -1)
-      Ok("All products comments")
+      productCommentRepository.getAll().map(productComments => Ok(Json.toJson(productComments)))
     else
-      Ok(s"All product $productId comments")
+      productCommentRepository.getByProductId(productId).map(productComments => Ok(Json.toJson(productComments)))
   }
 
-  def getById(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Comment $id")
+  def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    productCommentRepository.getByIdOption(id).map(productComment => productComment match {
+      case Some(pc) => Ok(Json.toJson(pc))
+      case None => Redirect(routes.ProductCommentsController.getByProductId())
+    })
   }
 
-  def update(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Update comment $id")
+  def update(id: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[UpdateProductCommentData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      productComment => {
+        productCommentRepository.update(id, ProductComment(id, productComment.rate, productComment.content, productComment.userId, productComment.productId))
+        Ok(Json.obj("message" -> (s"Product comment updated")))
+      }
+    )
   }
 
-  def delete(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Delete comment $id")
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    productCommentRepository.delete(id).map(_ => Ok(s"Product comment $id deleted"))
   }
 
   def createForm(): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>

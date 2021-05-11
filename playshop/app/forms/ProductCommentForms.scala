@@ -2,6 +2,7 @@ package forms
 
 import play.api.data.Form
 import play.api.data.Forms.{longNumber, mapping, number, text}
+import play.api.libs.json.Json
 
 case class CreateProductCommentData(rate: Int, content: String, userId: Long, productId: Long)
 case class UpdateProductCommentData(id: Long, rate: Int, content: String, userId: Long, productId: Long)
@@ -34,4 +35,12 @@ object ProductCommentForms {
       "content" -> text
     )(DeleteProductCommentData.apply)(DeleteProductCommentData.unapply)
   }
+}
+
+object CreateProductCommentData {
+  implicit val jsonFormat = Json.format[CreateProductCommentData]
+}
+
+object UpdateProductCommentData {
+  implicit val jsonFormat = Json.format[UpdateProductCommentData]
 }

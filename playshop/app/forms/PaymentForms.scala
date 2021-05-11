@@ -2,6 +2,7 @@ package forms
 
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.json.Json
 
 case class CreatePaymentData(provider: String, amount: BigDecimal)
 case class UpdatePaymentData(id: Long, provider: String, amount: BigDecimal, completed: Boolean)
@@ -32,4 +33,12 @@ object PaymentForms {
       "completed" -> boolean
     )(DeletePaymentData.apply)(DeletePaymentData.unapply)
   }
+}
+
+object CreatePaymentData {
+  implicit val jsonFormat = Json.format[CreatePaymentData]
+}
+
+object UpdatePaymentData {
+  implicit val jsonFormat = Json.format[UpdatePaymentData]
 }

@@ -2,6 +2,7 @@ package forms
 
 import play.api.data.Form
 import play.api.data.Forms.{longNumber, mapping, nonEmptyText}
+import play.api.libs.json.Json
 
 case class CreateCarMakeData(name: String)
 case class UpdateCarMakeData(id: Long, name: String)
@@ -27,4 +28,12 @@ object CarMakeForms {
       "name" -> nonEmptyText
     )(DeleteCarMakeData.apply)(DeleteCarMakeData.unapply)
   }
+}
+
+object CreateCarMakeData {
+  implicit val jsonFormat = Json.format[CreateCarMakeData]
+}
+
+object UpdateCarMakeData {
+  implicit val jsonFormat = Json.format[UpdateCarMakeData]
 }

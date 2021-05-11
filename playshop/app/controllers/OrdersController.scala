@@ -1,7 +1,8 @@
 package controllers
 
-import forms.{DeleteOrderData, OrderForms, UpdateOrderData}
+import forms.{CreateOrderData, DeleteOrderData, OrderForms, UpdateOrderData}
 import models.Order
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{OrderRepository, PaymentRepository, UserRepository}
 
@@ -11,27 +12,48 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OrdersController @Inject()(cc: MessagesControllerComponents, val orderRepository: OrderRepository, val userRepository: UserRepository, val paymentRepository: PaymentRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
-  def create(userId: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Create user $userId orderDetails")
+  def create(userId: Long) = Action(parse.json).async { request =>
+    val result = request.body.validate[CreateOrderData]
+    result.fold(
+      errors => {
+        Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
+      },
+      order => {
+        orderRepository.create(order.date.toString, userId, -1)
+        userRepository.getById(userId).map(user => Ok(Json.obj("message" -> (s"Order for user ${user.username} created"))))
+      }
+    )
   }
 
-  def getByUserId(userId: Long): Action[AnyContent] = Action { implicit request =>
+  def getByUserId(userId: Long): Action[AnyContent] = Action.async { implicit request =>
     if (userId == -1)
-      Ok("All orders")
+      orderRepository.getAll().map(orders => Ok(Json.toJson(orders)))
     else
-      Ok(s"All user $userId orders")
+      orderRepository.getByUserId(userId).map(orders => Ok(Json.toJson(orders)))
   }
 
-  def getById(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Order $id")
+  def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    orderRepository.getByIdOption(id).map(order => order match {
+      case Some(o) => Ok(Json.toJson(o))
+      case None => Redirect(routes.OrdersController.getByUserId())
+    })
   }
 
-  def update(orderId: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Update orderDetails $orderId")
+  def update(id: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[UpdateOrderData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      order => {
+        orderRepository.update(id, Order(id, order.date.toString, order.userId, order.paymentId))
+        Ok(Json.obj("message" -> (s"Order updated")))
+      }
+    )
   }
 
-  def delete(orderId: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Delete orderDetails $orderId")
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    orderRepository.delete(id).map(_ => Ok(s"Order $id deleted"))
   }
 
   def createForm(): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>

@@ -1,7 +1,8 @@
 package controllers
 
-import forms.{DeleteProductData, ProductForms, UpdateProductData}
+import forms.{CreateProductData, DeleteProductData, ProductForms, UpdateProductData}
 import models.Product
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{CategoryRepository, PartsManufacturerRepository, ProductRepository}
 
@@ -10,27 +11,48 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ProductsController @Inject()(cc: MessagesControllerComponents, val productRepository: ProductRepository, val partsManufacturerRepository: PartsManufacturerRepository, val categoryRepository: CategoryRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
-  def create(): Action[AnyContent] = Action { implicit request =>
-    Ok("Create product")
+  def create(categoryId: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[CreateProductData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      product => {
+        productRepository.create(product.name, product.description, product.price, product.partsManufacturerId, categoryId)
+        Ok(Json.obj("message" -> (s"Product ${product.name} created")))
+      }
+    )
   }
 
-  def getByCategoryId(categoryId: Long): Action[AnyContent] = Action { implicit request =>
+  def getByCategoryId(categoryId: Long): Action[AnyContent] = Action.async { implicit request =>
     if (categoryId == -1)
-      Ok("All products")
+      productRepository.getAll().map(products => Ok(Json.toJson(products)))
     else
-      Ok(s"Category $categoryId products")
+      productRepository.getByCategoryId(categoryId).map(products => Ok(Json.toJson(products)))
   }
 
-  def getById(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Product $id")
+  def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    productRepository.getByIdOption(id).map(product => product match {
+      case Some(p) => Ok(Json.toJson(p))
+      case None => Redirect(routes.ProductsController.getByCategoryId())
+    })
   }
 
-  def update(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Update product $id")
+  def update(id: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[UpdateProductData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      product => {
+        productRepository.update(id, Product(id, product.name, product.description, product.price, product.partsManufacturerId, product.categoryId))
+        Ok(Json.obj("message" -> (s"Product updated")))
+      }
+    )
   }
 
-  def delete(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Delete product $id")
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    productRepository.delete(id).map(_ => Ok(s"Product $id deleted"))
   }
 
   def createForm(): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>

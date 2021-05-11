@@ -2,6 +2,7 @@ package forms
 
 import play.api.data.Form
 import play.api.data.Forms.{bigDecimal, longNumber, mapping, nonEmptyText}
+import play.api.libs.json.Json
 
 case class CreateProductData(name: String, description: String, price: BigDecimal, partsManufacturerId: Long, categoryId: Long)
 case class UpdateProductData(id: Long, name: String, description: String, price: BigDecimal, partsManufacturerId: Long, categoryId: Long)
@@ -35,4 +36,12 @@ object ProductForms {
       "name" -> nonEmptyText
     )(DeleteProductData.apply)(DeleteProductData.unapply)
   }
+}
+
+object CreateProductData {
+  implicit val jsonFormat = Json.format[CreateProductData]
+}
+
+object UpdateProductData {
+  implicit val jsonFormat = Json.format[UpdateProductData]
 }

@@ -1,33 +1,55 @@
 package controllers
 
-import forms.{DeleteUserData, UpdateUserData, UserForms}
+import forms.{CreateUserData, DeleteUserData, UpdateUserData, UserForms}
 import play.api.mvc._
 import repositories.UserRepository
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import models.User
+import play.api.libs.json.{JsError, Json}
 
 @Singleton
 class UsersController @Inject()(cc: MessagesControllerComponents, val userRepository: UserRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
-  def create(): Action[AnyContent] = Action { implicit request =>
-    Ok("Create user")
+  def create() = Action(parse.json) { request =>
+    val result = request.body.validate[CreateUserData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      user => {
+        userRepository.create(user.username, user.password)
+        Ok(Json.obj("message" -> (s"User ${user.username} created")))
+      }
+    )
   }
 
-  def getAll(): Action[AnyContent] = Action { implicit request =>
-    Ok("All users")
+  def getAll(): Action[AnyContent] = Action.async { implicit request =>
+    userRepository.getAll().map(users => Ok(Json.toJson(users)))
   }
 
-  def getById(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"User $id")
+  def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    userRepository.getByIdOption(id).map(user => user match {
+      case Some(u) => Ok(Json.toJson(u))
+      case None => Redirect(routes.UsersController.getAll())
+    })
   }
 
-  def update(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Update user $id")
+  def update(id: Long) = Action(parse.json) { request =>
+    val result = request.body.validate[UpdateUserData]
+    result.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      user => {
+        userRepository.update(id, User(id, user.username, user.password))
+        Ok(Json.obj("message" -> (s"User updated")))
+      }
+    )
   }
 
-  def delete(id: Long): Action[AnyContent] = Action { implicit request =>
-    Ok(s"Delete user $id")
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
+    userRepository.delete(id).map(_ => Ok(s"User $id deleted"))
   }
 
   def createForm(): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>

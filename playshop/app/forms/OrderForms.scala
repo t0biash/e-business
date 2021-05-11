@@ -2,6 +2,7 @@ package forms
 
 import play.api.data.Form
 import play.api.data.Forms.{longNumber, mapping, sqlDate}
+import play.api.libs.json.Json
 
 import java.sql.Date
 
@@ -32,4 +33,12 @@ object OrderForms {
       "date" -> sqlDate,
     )(DeleteOrderData.apply)(DeleteOrderData.unapply)
   }
+}
+
+object CreateOrderData {
+  implicit val jsonFormat = Json.format[CreateOrderData]
+}
+
+object UpdateOrderData {
+  implicit val jsonFormat = Json.format[UpdateOrderData]
 }
