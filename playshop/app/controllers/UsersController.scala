@@ -24,8 +24,14 @@ class UsersController @Inject()(cc: MessagesControllerComponents, val userReposi
     )
   }
 
-  def getAll(): Action[AnyContent] = Action.async { implicit request =>
-    userRepository.getAll().map(users => Ok(Json.toJson(users)))
+  def getAll(username: String): Action[AnyContent] = Action.async { implicit request =>
+    if (username == "")
+      userRepository.getAll().map(users => Ok(Json.toJson(users)))
+    else
+      userRepository.getByUsernameOption(username).map(user => user match {
+        case Some(u) => Ok(Json.toJson(u))
+        case None => Redirect(routes.UsersController.getAll())
+      })
   }
 
   def getById(id: Long): Action[AnyContent] = Action.async { implicit request =>

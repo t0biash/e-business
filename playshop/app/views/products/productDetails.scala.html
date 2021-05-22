@@ -1,4 +1,4 @@
-@(product: Product, partsManufacturer: PartsManufacturer, category: Category)
+@(product: Product, partsManufacturer: PartsManufacturer, category: Category, carModel: CarModel, carMake: CarMake)
 
 <b>@product.id</b><br/>
 <b>@category.name</b><br/>
@@ -6,4 +6,6 @@
 <b>@product.name</b><br/>
 <b>@product.description</b><br/>
 <b>@product.price</b><br/>
+<b>@carMake.name</b><br />
+<b>@carModel.name</b><br />
 

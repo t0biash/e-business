@@ -6,7 +6,7 @@
 @form(routes.ProductsController.deleteFormHandle()) {
     @helper.CSRF.formField
     <input name="id" id="id" value="@product("id").value" type="hidden"><br />
-    <input name="engine" id="engine" value="@product("name").value" type="text" readonly>
+    <input name="name" id="name" value="@product("name").value" type="text" readonly>
 
     <div class="buttons">
         <input type="submit" value="Delete Product">

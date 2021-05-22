@@ -8,17 +8,19 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ProductRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val categoryRepository: CategoryRepository, val partsManufacturerRepository: PartsManufacturerRepository)(implicit ec: ExecutionContext) {
+class ProductRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val categoryRepository: CategoryRepository, val partsManufacturerRepository: PartsManufacturerRepository, val carModelRepository: CarModelRepository)(implicit ec: ExecutionContext) {
   val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
   import categoryRepository.CategoryTable
   import partsManufacturerRepository.PartsManufacturerTable
+  import carModelRepository.CarModelTable
 
   private val product = TableQuery[ProductTable]
   private val category = TableQuery[CategoryTable]
   private val partsManufacturer = TableQuery[PartsManufacturerTable]
+  private val carModel = TableQuery[CarModelTable]
 
   class ProductTable(tag: Tag) extends Table[Product](tag, "Product") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -27,16 +29,18 @@ class ProductRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val 
     def price = column[BigDecimal]("price")
     def partsManufacturerId = column[Long]("partsManufacturerId")
     def categoryId = column[Long]("categoryId")
+    def carModelId = column[Long]("carModelId")
     def partsManufacturer_FK = foreignKey("partsManufacturer_FK", partsManufacturerId, partsManufacturer)(_.id, onUpdate=ForeignKeyAction.SetNull, onDelete=ForeignKeyAction.SetNull)
     def category_FK = foreignKey("category_FK", categoryId, category)(_.id, onUpdate=ForeignKeyAction.SetNull, onDelete=ForeignKeyAction.SetNull)
-    def * = (id, name, description, price, partsManufacturerId, categoryId) <> ((Product.apply _).tupled, Product.unapply)
+    def carModel_FK = foreignKey("carModel_FK", carModelId, carModel)(_.id, onUpdate=ForeignKeyAction.SetNull, onDelete=ForeignKeyAction.SetNull)
+    def * = (id, name, description, price, partsManufacturerId, categoryId, carModelId) <> ((Product.apply _).tupled, Product.unapply)
   }
 
-  def create(name: String, description: String, price: BigDecimal, partsManufacturerId: Long, categoryId: Long): Future[Product] = db.run {
-    (product.map(p => (p.name, p.description, p.price, p.partsManufacturerId, p.categoryId))
+  def create(name: String, description: String, price: BigDecimal, partsManufacturerId: Long, categoryId: Long, carModelId: Long): Future[Product] = db.run {
+    (product.map(p => (p.name, p.description, p.price, p.partsManufacturerId, p.categoryId, p.carModelId))
       returning product.map(_.id)
-      into { case ((name, description, price, partsManufacturerId, categoryId), id) => Product(id, name, description, price, partsManufacturerId, categoryId) }
-    ) += (name, description, price, partsManufacturerId, categoryId)
+      into { case ((name, description, price, partsManufacturerId, categoryId, carModelId), id) => Product(id, name, description, price, partsManufacturerId, categoryId, carModelId) }
+    ) += (name, description, price, partsManufacturerId, categoryId, carModelId)
   }
 
   def getAll(): Future[Seq[Product]] = db.run(product.result)

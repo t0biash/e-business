@@ -1,0 +1,18 @@
+version: '3'
+services:
+  backend:
+    build: .
+    ports:
+      - 9000:9000
+    volumes:
+      - ./playshop:/home/user/ebusiness
+    working_dir: /home/user/ebusiness
+    command: bash -c "sbt run"
+  frontend:
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - ./reactapp:/home/user/ebusiness
+    working_dir: /home/user/ebusiness
+    command: bash -c "npm install && npm start"

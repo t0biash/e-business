@@ -64,7 +64,7 @@ POST    /forms/promotions/update                               controllers.Promo
 GET     /forms/promotions/:id/delete                           controllers.PromotionsController.deleteForm(id: Long)
 POST    /forms/promotions/delete                               controllers.PromotionsController.deleteFormHandle()
 # Users
-GET     /users                                                 controllers.UsersController.getAll()
+GET     /users                                                 controllers.UsersController.getAll(username: String ?= "")
 GET     /users/:id                                             controllers.UsersController.getById(id: Long)
 POST    /users                                                 controllers.UsersController.create()
 PUT     /users/:id                                             controllers.UsersController.update(id: Long)

@@ -1,0 +1,8 @@
+html, body, #playshop-app {
+    height: 100%;
+}
+
+.panel {
+    height: 85%;
+    width: 100%;
+}

@@ -4,13 +4,13 @@ import forms.{CreateProductData, DeleteProductData, ProductForms, UpdateProductD
 import models.Product
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.{CategoryRepository, PartsManufacturerRepository, ProductRepository}
+import repositories.{CarMakeRepository, CarModelRepository, CategoryRepository, PartsManufacturerRepository, ProductRepository}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ProductsController @Inject()(cc: MessagesControllerComponents, val productRepository: ProductRepository, val partsManufacturerRepository: PartsManufacturerRepository, val categoryRepository: CategoryRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class ProductsController @Inject()(cc: MessagesControllerComponents, val productRepository: ProductRepository, val partsManufacturerRepository: PartsManufacturerRepository, val categoryRepository: CategoryRepository, val carModelRepository: CarModelRepository, val carMakeRepository: CarMakeRepository)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
   def create(categoryId: Long) = Action(parse.json) { request =>
     val result = request.body.validate[CreateProductData]
     result.fold(
@@ -18,7 +18,7 @@ class ProductsController @Inject()(cc: MessagesControllerComponents, val product
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
       },
       product => {
-        productRepository.create(product.name, product.description, product.price, product.partsManufacturerId, categoryId)
+        productRepository.create(product.name, product.description, product.price, product.partsManufacturerId, categoryId, product.carModelId)
         Ok(Json.obj("message" -> (s"Product ${product.name} created")))
       }
     )
@@ -45,7 +45,7 @@ class ProductsController @Inject()(cc: MessagesControllerComponents, val product
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
       },
       product => {
-        productRepository.update(id, Product(id, product.name, product.description, product.price, product.partsManufacturerId, product.categoryId))
+        productRepository.update(id, Product(id, product.name, product.description, product.price, product.partsManufacturerId, product.categoryId, product.carModelId))
         Ok(Json.obj("message" -> (s"Product updated")))
       }
     )
@@ -57,22 +57,26 @@ class ProductsController @Inject()(cc: MessagesControllerComponents, val product
 
   def createForm(): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
     partsManufacturerRepository.getAll().flatMap(partsManufacturers => {
-      categoryRepository.getAll().map(categories => Ok(views.html.products.productAdd(ProductForms.CreateForm, partsManufacturers, categories)))
+      categoryRepository.getAll().flatMap(categories => {
+        carModelRepository.getAll().map(carModels => Ok(views.html.products.productAdd(ProductForms.CreateForm, partsManufacturers, categories, carModels)))
+      })
     })
   }
 
   def createFormHandle(): Action[AnyContent] = Action.async { implicit request =>
     partsManufacturerRepository.getAll().flatMap(partsManufacturers => {
-      categoryRepository.getAll().flatMap(categories =>
-        ProductForms.CreateForm.bindFromRequest.fold(
-          errorForm => Future.successful(BadRequest(views.html.products.productAdd(errorForm, partsManufacturers, categories))),
-          productData => {
-            productRepository.create(productData.name, productData.description, productData.price, productData.partsManufacturerId, productData.categoryId).map { _ =>
-              Redirect(routes.ProductsController.createForm()).flashing("success" -> "Product created")
+      categoryRepository.getAll().flatMap(categories => {
+        carModelRepository.getAll().flatMap(carModels =>
+          ProductForms.CreateForm.bindFromRequest.fold(
+            errorForm => Future.successful(BadRequest(views.html.products.productAdd(errorForm, partsManufacturers, categories, carModels))),
+            productData => {
+              productRepository.create(productData.name, productData.description, productData.price, productData.partsManufacturerId, productData.categoryId, productData.carModelId).map { _ =>
+                Redirect(routes.ProductsController.createForm()).flashing("success" -> "Product created")
+              }
             }
-          }
+          )
         )
-      )
+      })
     })
   }
 
@@ -90,14 +94,18 @@ class ProductsController @Inject()(cc: MessagesControllerComponents, val product
   def getByIdForm(id: Long): Action[AnyContent] = Action.async { implicit request =>
     productRepository.getById(id).flatMap(product => {
       partsManufacturerRepository.getById(product.partsManufacturerId).flatMap(partsManufacturer => {
-        categoryRepository.getById(product.categoryId).map(category => Ok(views.html.products.productDetails(product, partsManufacturer, category)))
+        categoryRepository.getById(product.categoryId).flatMap(category => {
+          carModelRepository.getById(product.carModelId).flatMap(carModel => {
+            carMakeRepository.getById(carModel.carMakeId).map(carMake => Ok(views.html.products.productDetails(product, partsManufacturer, category, carModel, carMake)))
+          })
+        })
       })
     })
   }
 
   def updateForm(id: Long): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
     productRepository.getById(id).map(product => {
-      val updateForm = ProductForms.UpdateForm.fill(UpdateProductData(product.id, product.name, product.description, product.price, product.partsManufacturerId, product.categoryId))
+      val updateForm = ProductForms.UpdateForm.fill(UpdateProductData(product.id, product.name, product.description, product.price, product.partsManufacturerId, product.categoryId, product.carModelId))
       Ok(views.html.products.productUpdate(updateForm))
     })
   }
@@ -108,7 +116,7 @@ class ProductsController @Inject()(cc: MessagesControllerComponents, val product
         Future.successful(BadRequest(views.html.products.productUpdate(errorForm)))
       },
       productData => {
-        productRepository.update(productData.id, Product(productData.id, productData.name, productData.description, productData.price, productData.partsManufacturerId, productData.categoryId)).map { _ =>
+        productRepository.update(productData.id, Product(productData.id, productData.name, productData.description, productData.price, productData.partsManufacturerId, productData.categoryId, productData.carModelId)).map { _ =>
           Redirect(routes.ProductsController.updateForm(productData.id)).flashing("success" -> "Product updated")
         }
       }

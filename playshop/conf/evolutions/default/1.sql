@@ -10,6 +10,25 @@ create table "PartsManufacturer" (
     "name" text not null,
     "description" text
 );
+create table "CarMake" (
+   "id" integer primary key,
+   "name" text not null
+);
+
+create table "CarModel" (
+    "id" integer primary key,
+    "name" text not null,
+    "year" integer not null,
+    "carMakeId" integer not null,
+    foreign key(carMakeId) references CarMake(id)
+);
+
+create table "Engine" (
+    "id" integer primary key,
+    "name" text not null,
+    "carModelId" integer not null,
+    foreign key(carModelId) references CarModel(id)
+);
 
 create table "Product" (
     "id" integer primary key,
@@ -18,8 +37,10 @@ create table "Product" (
     "price" integer not null,
     "partsManufacturerId" integer not null,
     "categoryId" integer not null,
+    "carModelId" integer not null,
     foreign key(partsManufacturerId) references PartsManufacturer(id),
-    foreign key(categoryId) references Category(id)
+    foreign key(categoryId) references Category(id),
+    foreign key(carModelId) references CarModel(id)
 );
 
 create table "User" (
@@ -35,26 +56,6 @@ create table "Promotion" (
     "toDate" text not null,
     "productId" integer not null,
     foreign key(productId) references Product(id)
-);
-
-create table "CarMake" (
-    "id" integer primary key,
-    "name" text not null
-);
-
-create table "CarModel" (
-    "id" integer primary key,
-    "name" text not null,
-    "year" integer not null,
-    "carMakeId" integer not null,
-    foreign key(carMakeId) references CarMake(id)
-);
-
-create table "Engine" (
-   "id" integer primary key,
-   "name" text not null,
-   "carModelId" integer not null,
-   foreign key(carModelId) references CarModel(id)
 );
 
 create table "ProductComment" (
@@ -95,12 +96,12 @@ create table "OrderProduct" (
 # --- !Downs
 drop table "Category";
 drop table "PartsManufacturer";
-drop table "Product";
-drop table "User";
-drop table "Promotion";
 drop table "CarMake";
 drop table "CarModel";
 drop table "Engine";
+drop table "Product";
+drop table "User";
+drop table "Promotion";
 drop table "ProductComment";
 drop table "Payment";
 drop table "Order";

@@ -16,7 +16,6 @@ libraryDependencies ++= Seq(
 libraryDependencies += "org.xerial" % "sqlite-jdbc" % "3.34.0"
 
 resolvers += "Akka Snapshot Repository" at "https://repo.akka.io/snapshots/"
-resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.example.controllers._"
 
