@@ -1,0 +1,11 @@
+.cart-summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.cart-summary .total-amount {
+    font-size: 18px;
+    margin-bottom: 12px;
+}

@@ -93,6 +93,9 @@ GET     /forms/orders/:id/update                               controllers.Order
 POST    /forms/orders/update                                   controllers.OrdersController.updateFormHandle()
 GET     /forms/orders/:id/delete                               controllers.OrdersController.deleteForm(id: Long)
 POST    /forms/orders/delete                                   controllers.OrdersController.deleteFormHandle()
+# Order products
+GET     /orders/:orderId/products                              controllers.OrderProductsController.getByOrderId(orderId: Long)
+POST    /orders/:orderId/products                              controllers.OrderProductsController.create(orderId: Long)
 # Car makes
 GET     /car-makes                                             controllers.CarMakesController.getAll()
 GET     /car-makes/:id                                         controllers.CarMakesController.getById(id: Long)

@@ -1,22 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import Menu from '../Menu/Menu';
-import { fetchProducts } from '../../api/products';
-import { fetchPromotions } from '../../api/promotions';
+import { ProductsContext } from '../../contexts/ProductsContext';
+import { PromotionsContext } from '../../contexts/PromotionsContext';
 
 export default function Promotions() {
-    const [promotions, setPromotions] = useState([]);
-    const [products, setProducts] = useState([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            let response = await fetchProducts(); 
-            setProducts(response);
-
-            response = await fetchPromotions(); 
-            setPromotions(response.filter(promotion => new Date(promotion.toDate) >= new Date()));
-        }
-        fetchData()
-    }, []);
+    const { products } = useContext(ProductsContext);
+    const promotions = useContext(PromotionsContext);
 
     return (
         <div>

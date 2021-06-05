@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
-import Card from 'react-bootstrap/Card';
-import { Link } from 'react-router-dom';
 import { CartContext } from '../../contexts/CartContext';
+import Card from 'react-bootstrap/Card';
 
-export default function Product(props) {
-    const { addProduct } = useContext(CartContext);
+export default function CartItem(props) {
+    const { removeProduct } = useContext(CartContext);
 
     return (
         <Card style={{ width: '20rem', marginBottom: '32px' }}>
@@ -16,9 +15,8 @@ export default function Product(props) {
                 </Card.Text>
             </Card.Body>
             <Card.Body>
-                <Card.Link onClick={() => addProduct(props.data)}>Dodaj do koszyka</Card.Link><br />
-                <Link to={`/product-details/${props.data.id}`}>Sprawdź szczegóły</Link>
+                <Card.Link onClick={() => removeProduct(props.data.id)}>Usuń z koszyka</Card.Link><br />
             </Card.Body>
         </Card>
-    );
+    )
 }

@@ -1,0 +1,22 @@
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 100px;
+    justify-content: center;
+    align-items: center;
+}
+
+.comment-form input {
+    margin-bottom: 15px;
+    border: none;
+    border-bottom: 1px solid #000;
+}
+
+.comment-form input:focus {
+    outline: none;
+}
+
+.comment-form input[name='content'] {
+    width: 500px;
+}
+

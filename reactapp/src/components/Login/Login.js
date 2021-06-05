@@ -1,52 +1,49 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { fetchUserByUsername } from '../../api/users';
+import { UserContext } from '../../contexts/UserContext';
 
-export default class Login extends React.Component {
-    constructor(props) {
-        super(props);
+export default function Login(props) {
+    const { authenticated, setAuthenticated } = useContext(UserContext);
+    
+    const [inputUsername, setInputUsername] = useState('');
+    const [inputPassword, setInputPassword] = useState('');
 
-        this.handleLogin = this.handleLogin.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.state = { username: '', password: '' }
-    }
-
-    handleLogin = async () => {
-        const response = await fetchUserByUsername(this.state.username);
+    const handleLogin = async () => {
+        const response = await fetchUserByUsername(inputUsername);
+        let validData = false;
 
         if (Array.isArray(response)) {
             alert('Invalid username');
+            validData = false;
         }
         else {
-            if (response.password === this.state.password) {
-                localStorage.setItem('username', response.username);
-                localStorage.setItem('userId', response.id);
-                this.props.handleLoggedIn(true);
-            }
-            else
+            if (response.password === inputPassword) 
+                validData = true;
+            else {
                 alert('Invalid password');
+                validData = false;
+            }
         }
-        this.setState({ username: '', password: '' });
-    }
 
-    handleInputChange = (event) => this.setState({ [event.target.name]: event.target.value });
+        setInputUsername('');
+        setInputPassword('');
 
-    render() {
-        if (this.props.isLoggedIn === false)
-            return (
-                <div className='register panel'>
-                    <h1>Logowanie</h1>
-                    <label htmlFor='username'>Nazwa użytkownika</label>
-                    <input type='text' id='username' name='username' value={this.state.username} onChange={this.handleInputChange} />
-                    <label htmlFor='password'>Hasło</label>
-                    <input type='password' id='password' name='password' value={this.state.password} onChange={this.handleInputChange} />
-                    <button type='submit' onClick={this.handleLogin}>Zaloguj się</button>
-                </div>
-            );
-        else
-            return (
-                <div className='register panel'>
-                    <button type='submit' onClick={this.handleLogout}>Wyloguj się</button>
-                </div>
-            );
-    }
+        if (validData) {
+            const user = { id: response.id, username: response.username };
+            localStorage.setItem('user', JSON.stringify(user));
+            setAuthenticated(true);
+        }
+    };
+
+    if (!authenticated)
+        return (
+            <div className='register panel'>
+                <h1>Logowanie</h1>
+                <label htmlFor='username'>Nazwa użytkownika</label>
+                <input type='text' id='username' name='username' value={inputUsername} onChange={e => setInputUsername(e.target.value)} />
+                <label htmlFor='password'>Hasło</label>
+                <input type='password' id='password' name='password' value={inputPassword} onChange={e => setInputPassword(e.target.value)} />
+                <button type='submit' onClick={handleLogin}>Zaloguj się</button>
+            </div>
+        );
 }

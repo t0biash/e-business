@@ -1,33 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import Comment from '../Comments/Comments';
+import React, { useEffect, useState, useContext } from 'react';
+import Comment from '../Comment/Comment';
+import NewComment from '../NewComment/NewComment';
 import Menu from '../Menu/Menu';
 import { useParams } from 'react-router-dom';
-import { fetchProductById } from '../../api/products';
-import { fetchCategoryById } from '../../api/catagories';
-import { fetchPartsManufacturerById } from '../../api/partsManufacturers';
+import { ProductsContext } from '../../contexts/ProductsContext';
+import { UserContext } from '../../contexts/UserContext';
 import { fetchCommentsByProductId } from '../../api/productComments';
 
 export default function ProductDetails() {
+    const { categories, products, partsManufacturers } = useContext(ProductsContext);
+    const { authenticated } = useContext(UserContext);
+
     const { productId } = useParams();
-    const [product, setProduct] = useState(null);
+
     const [category, setCategory] = useState(null);
+    const [product, setProduct] = useState(null);
     const [partsManufacturer, setPartsManufacturer] = useState(null);
     const [comments, setComments] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const product = await fetchProductById(productId);
-            const category = await fetchCategoryById(product.categoryId);
-            const partsManufacturer = await fetchPartsManufacturerById(product.partsManufacturerId);
+            let product = products.filter(product => product.id === parseInt(productId));
+            product = product.length !== 0 ? product[0] : product;
+            let category = categories.filter(category => category.id === product.categoryId);
+            category = category.length !== 0 ? category[0] : category;
+            let partsManufacturer = partsManufacturers.filter(partsManufacturer => partsManufacturer.id === product.partsManufacturerId);
+            partsManufacturer = partsManufacturer.length !== 0 ? partsManufacturer[0] : partsManufacturer;
             const comments = await fetchCommentsByProductId(productId);
-
-            setProduct(product);
+            
             setCategory(category);
+            setProduct(product);
             setPartsManufacturer(partsManufacturer);
-            setComments(comments);
-        }
+            setComments(Array.isArray(comments) ? comments : [comments]);
+        };
         fetchData();
-    }, [productId])
+    }, [categories, products, partsManufacturers, productId, comments])
+
+
 
     if (product != null && category != null && partsManufacturer != null) 
         return (
@@ -40,7 +49,8 @@ export default function ProductDetails() {
                     <strong>Kategoria: </strong>{category.name}<br /> 
                     <strong>Producent: </strong>{partsManufacturer.name}<br /><br />
                     <strong>Komentarze:</strong><br />
-                    { comments.length > 0 ? comments.map(comment => <Comment key={comment.id} data={comment} />) : <></> }
+                    { comments.length !== 0 ? comments.map(comment => <Comment key={comment.id} data={comment} />) : <></> }
+                    { authenticated ? <NewComment productId={productId} comments={comments} /> : <></> }
                 </div>
             </>
         );

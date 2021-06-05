@@ -1,26 +1,33 @@
-.menu {
+.menu, .user-menu {
     display: flex;
     line-height: 50px;
     background-color: #636e72;
     color: #fff;
 }
 
-.menu a {
+.menu a, .user-menu a {
     color: #fff !important;
     text-decoration: none !important;
 }
 
 .first-tab, .second-tab, .third-tab {
-    width: 33%;
     text-align: center;
     transition: background-color 250ms ease;
-}
-
-.second-tab {
-    width: 34%;
 }
 
 .first-tab:hover, .second-tab:hover, .third-tab:hover {
     background-color: #0984e3;
     cursor: pointer;
+}
+
+.menu .first-tab, .menu .second-tab, .menu .third-tab {
+    width: 33%;
+}
+
+.menu .second-tab {
+    width: 34%;
+}
+
+.user-menu .first-tab, .user-menu .second-tab {
+    width: 50%;
 }

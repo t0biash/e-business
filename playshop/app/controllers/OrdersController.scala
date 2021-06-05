@@ -19,8 +19,9 @@ class OrdersController @Inject()(cc: MessagesControllerComponents, val orderRepo
         Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
       },
       order => {
-        orderRepository.create(order.date.toString, userId, -1)
-        userRepository.getById(userId).map(user => Ok(Json.obj("message" -> (s"Order for user ${user.username} created"))))
+        orderRepository.create(order.date.toString, userId, -1).flatMap(createdOrder => {
+          userRepository.getById(userId).map(user => Ok(Json.obj("message" -> (s"Order for user ${user.username} created"), "orderId" -> createdOrder.id)))
+        })
       }
     )
   }

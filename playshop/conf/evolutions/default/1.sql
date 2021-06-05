@@ -86,7 +86,6 @@ create table "Payment" (
 
 create table "OrderProduct" (
     "id" integer primary key,
-    "quantity" integer not null,
     "orderId" integer not null,
     "productId" integer not null,
     foreign key(orderId) references UserOrder(id),

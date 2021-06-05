@@ -1,21 +1,21 @@
 const fetchUserByUsername = async (username) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/users?username=${username}`);
-    return await response.json();
+    return response.json();
 }
 
 const fetchUserById = async (id) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${id}`);
-    return await response.json();
+    return response.json();
 }
 
-const createUser = async (body) => {
+const createUser = async (user) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, { 
         method: 'POST',
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify(user)
     });
-    return await response.json();
+    return response.json();
 }
 
 export {

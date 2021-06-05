@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { fetchUserById } from '../../api/users';
  
-export default function Comments(prop) {
+export default function Comment(props) {
     const [user, setUser] = useState(null);
-    
+
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetchUserById(prop.data.userId);
-            setUser(response);
+            const user = await fetchUserById(props.data.userId);
+            setUser(user);
         }
         fetchData();
-    }, [prop.data.userId]);
+    }, [props.data.userId]);
 
-    if (user != null)
+    if (user != null) 
         return (
             <div className='list-element'>
-                <h5>Użytkownik: {user.username}</h5>
-                <strong>Ocena: </strong>{prop.data.rate}/5<br />
-                {prop.data.content}
+                <strong>Użytkownik: </strong>{user.username}<br />
+                <strong>Ocena: </strong>{props.data.rate}/5<br />
+                {props.data.content}
                 <hr />
             </div>
         );

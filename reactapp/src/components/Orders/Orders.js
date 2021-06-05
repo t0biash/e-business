@@ -8,7 +8,8 @@ export default function Orders() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const orders = await fetchUserOrders(localStorage.getItem('userId'));
+            const user = JSON.parse(localStorage.getItem('user'));
+            const orders = await fetchUserOrders(user.id);
             setOrders(orders);
         }
         fetchData();

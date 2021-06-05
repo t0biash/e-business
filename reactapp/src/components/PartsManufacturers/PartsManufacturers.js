@@ -1,18 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import Menu from '../Menu/Menu';
-import { fetchPartsManufacturers } from '../../api/partsManufacturers';
+import { ProductsContext } from '../../contexts/ProductsContext';
 import './PartsManufacturers.css';
 
 export default function PartsManufacturers() {
-    const [partsManufacturers, setPartsManufacturers] = useState([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetchPartsManufacturers();
-            setPartsManufacturers(response);
-        }
-        fetchData();
-    }, []);
+    const { partsManufacturers } = useContext(ProductsContext);
 
     return (
         <div>
