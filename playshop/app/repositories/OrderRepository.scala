@@ -25,8 +25,8 @@ class OrderRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val us
     def date = column[String]("date")
     def userId = column[Long]("userId")
     def paymentId = column[Long]("paymentId")
-    def userId_FK = foreignKey("userId_FK", userId, user)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
-    def paymentId_FK = foreignKey("paymentId_FK", paymentId, payment)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
+    def userFK = foreignKey("user_FK", userId, user)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
+    def paymentFK = foreignKey("payment_FK", paymentId, payment)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
     def * = (id, date, userId, paymentId) <> ((Order.apply _).tupled, Order.unapply)
   }
 

@@ -14,13 +14,13 @@ export const ProductsContextProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const categories = await fetchCategories();
-            const partsManufacturers = await fetchPartsManufacturers();
-            const products = await fetchProducts();
+            const responseCategories = await fetchCategories();
+            const responsePartsManufacturers = await fetchPartsManufacturers();
+            const responseProducts = await fetchProducts();
 
-            setCategories(categories);
-            setPartsManufacturers(partsManufacturers);
-            setProducts(products);
+            setCategories(responseCategories);
+            setPartsManufacturers(responsePartsManufacturers);
+            setProducts(responseProducts);
         };
         fetchData();
     }, []);

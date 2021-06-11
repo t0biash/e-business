@@ -24,8 +24,8 @@ class OrderProductRepository @Inject()(dbConfigProvider: DatabaseConfigProvider,
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def orderId = column[Long]("orderId")
     def productId = column[Long]("productId")
-    def orderId_FK = foreignKey("orderId_FK", orderId, order)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
-    def productId_FK = foreignKey("productId_FK", productId, product)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
+    def orderFK = foreignKey("order_FK", orderId, order)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
+    def productFK = foreignKey("product_FK", productId, product)(_.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.SetNull)
     def * = (id, orderId, productId) <> ((OrderProduct.apply _).tupled, OrderProduct.unapply)
   }
 

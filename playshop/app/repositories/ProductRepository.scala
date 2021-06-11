@@ -30,9 +30,9 @@ class ProductRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val 
     def partsManufacturerId = column[Long]("partsManufacturerId")
     def categoryId = column[Long]("categoryId")
     def carModelId = column[Long]("carModelId")
-    def partsManufacturer_FK = foreignKey("partsManufacturer_FK", partsManufacturerId, partsManufacturer)(_.id, onUpdate=ForeignKeyAction.SetNull, onDelete=ForeignKeyAction.SetNull)
-    def category_FK = foreignKey("category_FK", categoryId, category)(_.id, onUpdate=ForeignKeyAction.SetNull, onDelete=ForeignKeyAction.SetNull)
-    def carModel_FK = foreignKey("carModel_FK", carModelId, carModel)(_.id, onUpdate=ForeignKeyAction.SetNull, onDelete=ForeignKeyAction.SetNull)
+    def partsManufacturerFK = foreignKey("partsManufacturer_FK", partsManufacturerId, partsManufacturer)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
+    def categoryFK = foreignKey("category_FK", categoryId, category)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
+    def carModelFK = foreignKey("carModel_FK", carModelId, carModel)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
     def * = (id, name, description, price, partsManufacturerId, categoryId, carModelId) <> ((Product.apply _).tupled, Product.unapply)
   }
 

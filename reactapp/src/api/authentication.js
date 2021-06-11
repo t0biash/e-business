@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
 const signIn = async (data) => {
-    return await fetch(`${process.env.REACT_APP_API_URL}/signIn`, { 
+    return fetch(`${process.env.REACT_APP_API_URL}/signIn`, { 
         method: 'POST',
         mode: 'cors',
         credentials: 'include',
@@ -24,11 +24,11 @@ const signOut = async () => {
 };
 
 const authenticate = async (provider) => {
-    return await fetch(`${process.env.REACT_APP_API_URL}/authenticate/${provider}`);
+    return fetch(`${process.env.REACT_APP_API_URL}/authenticate/${provider}`);
 }
 
 const signUp = async (data) => {
-    return await fetch(`${process.env.REACT_APP_API_URL}/signUp`, { 
+    return fetch(`${process.env.REACT_APP_API_URL}/signUp`, { 
         method: 'POST',
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },

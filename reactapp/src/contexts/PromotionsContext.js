@@ -8,9 +8,9 @@ export const PromotionsContextProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const promotions = await fetchPromotions();
+            const response = await fetchPromotions();
 
-            setPromotions(promotions);
+            setPromotions(response);
         };
         fetchData();
     }, []);

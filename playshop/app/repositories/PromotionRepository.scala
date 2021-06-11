@@ -24,7 +24,7 @@ class PromotionRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, va
     def fromDate = column[String]("fromDate")
     def toDate = column[String]("toDate")
     def productId = column[Long]("productId")
-    def product_FK = foreignKey("product_FK", productId, product)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
+    def productFK = foreignKey("product_FK", productId, product)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.SetNull)
     def * = (id, percentage, fromDate, toDate, productId) <> ((Promotion.apply _).tupled, Promotion.unapply)
   }
 

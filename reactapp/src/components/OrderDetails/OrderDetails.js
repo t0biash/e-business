@@ -13,16 +13,16 @@ export default function OrderDetails(props) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const orderProducts = await fetchOrderProducts(orderId);
-            setOrderProducts(orderProducts);
+            const response = await fetchOrderProducts(orderId);
+            setOrderProducts(response);
         };
         fetchData();
     }, [orderId]);
     
     const orderDetailsElement = (index, productId) => {
-        const product = products.filter(product => product.id === productId)[0];
-        const category = categories.filter(category => category.id === product.categoryId)[0];
-        const partsManufacturer = partsManufacturers.filter(partsManufacturer => partsManufacturer.id === product.partsManufacturerId)[0];
+        const product = products.filter(p => p.id === productId)[0];
+        const category = categories.filter(c => c.id === product.categoryId)[0];
+        const partsManufacturer = partsManufacturers.filter(pm => pm.id === product.partsManufacturerId)[0];
 
         return (
             <div key={index} className='list-element'>

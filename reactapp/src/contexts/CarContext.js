@@ -14,13 +14,13 @@ export const CarContextProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const carMakes = await fetchCarMakes();
-            const carModels = await fetchCarModels();
-            const engines = await fetchEngines();
+            const responseCarMakes = await fetchCarMakes();
+            const responseCarModels = await fetchCarModels();
+            const responseEngines = await fetchEngines();
 
-            setCarMakes(carMakes);
-            setCarModels(carModels);
-            setEngines(engines);
+            setCarMakes(responseCarMakes);
+            setCarModels(responseCarModels);
+            setEngines(responseEngines);
         };
         fetchData();
     }, []);

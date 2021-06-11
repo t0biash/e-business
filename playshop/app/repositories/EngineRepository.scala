@@ -22,7 +22,7 @@ class EngineRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val c
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def name = column[String]("name")
     def carModelId = column[Long]("carModelId")
-    def carModel_FK = foreignKey("carModel_FK", carModelId, carModel)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
+    def carModelFK = foreignKey("carModel_FK", carModelId, carModel)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
     def * = (id, name, carModelId) <> ((Engine.apply _).tupled, Engine.unapply)
   }
 

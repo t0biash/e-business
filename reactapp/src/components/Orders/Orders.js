@@ -11,8 +11,8 @@ export default function Orders() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const orders = await fetchUserOrders(userId);
-            setOrders(orders);
+            const response = await fetchUserOrders(userId);
+            setOrders(response);
         }
         fetchData();
     }, [userId]);

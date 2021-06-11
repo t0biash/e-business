@@ -20,18 +20,15 @@ export default function ProductDetails() {
 
     useEffect(() => {
         const fetchData = async () => {
-            let product = products.filter(product => product.id === parseInt(productId));
-            product = product.length !== 0 ? product[0] : product;
-            let category = categories.filter(category => category.id === product.categoryId);
-            category = category.length !== 0 ? category[0] : category;
-            let partsManufacturer = partsManufacturers.filter(partsManufacturer => partsManufacturer.id === product.partsManufacturerId);
-            partsManufacturer = partsManufacturer.length !== 0 ? partsManufacturer[0] : partsManufacturer;
-            const comments = await fetchCommentsByProductId(productId);
+            const responseProduct = products.filter(p => p.id === parseInt(productId));
+            const responseCategory = categories.filter(c => c.id === responseProduct.categoryId);
+            const responsePartsManufacturers = partsManufacturers.filter(pm => pm.id === responseProduct.partsManufacturerId);
+            const responseComments = await fetchCommentsByProductId(productId);
             
-            setCategory(category);
-            setProduct(product);
-            setPartsManufacturer(partsManufacturer);
-            setComments(Array.isArray(comments) ? comments : [comments]);
+            setCategory(responseCategory);
+            setProduct(responseProduct);
+            setPartsManufacturer(responsePartsManufacturers);
+            setComments(Array.isArray(responseComments) ? responseComments : [responseComments]);
         };
         fetchData();
     }, [categories, products, partsManufacturers, productId, comments])

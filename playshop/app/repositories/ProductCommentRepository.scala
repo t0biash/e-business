@@ -26,8 +26,8 @@ class ProductCommentRepository @Inject()(dbConfigProvider: DatabaseConfigProvide
     def content = column[String]("content")
     def userId = column[Long]("userId")
     def productId = column[Long]("productId")
-    def user_FK = foreignKey("user_FK", userId, user)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
-    def product_FK = foreignKey("product_FK", productId, product)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
+    def userFK = foreignKey("user_FK", userId, user)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
+    def productFK = foreignKey("product_FK", productId, product)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
     def * = (id, rate, content, userId, productId) <> ((ProductComment.apply _).tupled, ProductComment.unapply)
   }
 
