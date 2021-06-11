@@ -64,20 +64,7 @@ POST    /forms/promotions/update                               controllers.Promo
 GET     /forms/promotions/:id/delete                           controllers.PromotionsController.deleteForm(id: Long)
 POST    /forms/promotions/delete                               controllers.PromotionsController.deleteFormHandle()
 # Users
-GET     /users                                                 controllers.UsersController.getAll(username: String ?= "")
-GET     /users/:id                                             controllers.UsersController.getById(id: Long)
-POST    /users                                                 controllers.UsersController.create()
-PUT     /users/:id                                             controllers.UsersController.update(id: Long)
-DELETE  /users/:id                                             controllers.UsersController.delete(id: Long)
-
-GET     /forms/users/add                                       controllers.UsersController.createForm()
-POST    /forms/users/add                                       controllers.UsersController.createFormHandle()
-GET     /forms/users                                           controllers.UsersController.getAllForm()
-GET     /forms/users/:id                                       controllers.UsersController.getByIdForm(id: Long)
-GET     /forms/users/:id/update                                controllers.UsersController.updateForm(id: Long)
-POST    /forms/users/update                                    controllers.UsersController.updateFormHandle()
-GET     /forms/users/:id/delete                                controllers.UsersController.deleteForm(id: Long)
-POST    /forms/users/delete                                    controllers.UsersController.deleteFormHandle()
+GET     /users/:id                                             controllers.UsersController.getEmailById(id: Long)
 # Orders
 GET     /orders                                                controllers.OrdersController.getByUserId(userId: Long ?= -1)
 GET     /orders/:id                                            controllers.OrdersController.getById(id: Long)
@@ -170,5 +157,11 @@ GET     /forms/parts-manufacturers/:id/update                  controllers.Parts
 POST    /forms/parts-manufacturers/update                      controllers.PartsManufacturersController.updateFormHandle()
 GET     /forms/parts-manufacturers/:id/delete                  controllers.PartsManufacturersController.deleteForm(id: Long)
 POST    /forms/parts-manufacturers/delete                      controllers.PartsManufacturersController.deleteFormHandle()
+# Authentication
+POST    /signUp                                                controllers.SignUpController.signUp
+POST    /signIn                                                controllers.SignInController.signIn
+POST    /signOut                                               controllers.SignInController.signOut
+GET     /authenticate/:provider                                controllers.SocialAuthController.authenticate(provider: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                                          controllers.Assets.versioned(path="/public", file: Asset)

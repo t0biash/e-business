@@ -17,23 +17,29 @@ import PromotionsContextProvider from './contexts/PromotionsContext';
 import { CartContext } from './contexts/CartContext';
 import { UserContext } from './contexts/UserContext';
 import React, { useState } from 'react';
+import Cookies from 'js-cookie';
 import './App.css';
 
 export default function App(props) {
-    const [authenticated, setAuthenticated] = useState(localStorage.getItem('user') === null ? false : true);
+    const [authenticated, setAuthenticated] = useState(Cookies.get('csrfToken') === undefined ? false : true);
+    const [userId, setUserId] = useState(Cookies.get('user') === undefined ? 0 : parseInt(Cookies.get('user')));
 
     const [cart, setCart] = useState([]);
     const addProduct = (product) => setCart([...cart, product]);
     const removeProduct = (id) => {
-        const filteredProducts = cart.filter(product => product.id !== id);
-        setCart(filteredProducts);
+        const productToRemoveIndex = cart.findIndex(product => product.id === id);
+        if (productToRemoveIndex > -1) {
+            const newCart = [...cart];
+            newCart.splice(productToRemoveIndex, 1);
+            setCart(newCart);
+        }
     };
 
     return (
         <CarContextProvider>
             <ProductsContextProvider>
-                <UserContext.Provider value={{ authenticated, setAuthenticated }}>
-                    <CartContext.Provider value={{ cart, addProduct, removeProduct }}>
+                <UserContext.Provider value={{ authenticated, userId, setAuthenticated, setUserId }}>
+                    <CartContext.Provider value={{ cart, setCart, addProduct, removeProduct }}>
                         <BrowserRouter>
                             <NavigationBar />
                             <Route exact path='/'>

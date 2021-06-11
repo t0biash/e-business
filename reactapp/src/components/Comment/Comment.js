@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { fetchUserById } from '../../api/users';
+import { fetchEmailByUserId } from '../../api/users';
  
 export default function Comment(props) {
-    const [user, setUser] = useState(null);
+    const [email, setEmail] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            const user = await fetchUserById(props.data.userId);
-            setUser(user);
+            const response = await fetchEmailByUserId(props.data.userId);
+            setEmail(response);
         }
         fetchData();
     }, [props.data.userId]);
 
-    if (user != null) 
+    if (email != null) 
         return (
             <div className='list-element'>
-                <strong>Użytkownik: </strong>{user.username}<br />
+                <strong>Użytkownik: </strong>{email}<br />
                 <strong>Ocena: </strong>{props.data.rate}/5<br />
                 {props.data.content}
                 <hr />

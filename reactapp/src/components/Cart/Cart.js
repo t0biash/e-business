@@ -9,8 +9,8 @@ import { createOrder, createOrderProduct } from '../../api/orders';
 import './Cart.css';
 
 export default function Cart(props) {
-    const { cart } = useContext(CartContext);
-    const { authenticated } = useContext(UserContext);
+    const { cart, setCart } = useContext(CartContext);
+    const { authenticated, userId } = useContext(UserContext);
     const history = useHistory();
 
     const makeOrder = async () => {
@@ -19,15 +19,16 @@ export default function Cart(props) {
             return;
         }
        
-        const user = JSON.parse(localStorage.getItem('user'));
-        const order = { date: new Date().toISOString().split('T')[0], userId: user.id };
+        const order = { date: new Date().toISOString().split('T')[0], userId: userId };
         let response = await createOrder(order);
 
         for (let product of cart) { 
             const orderProduct = { orderId: response.orderId, productId: product.id };
             await createOrderProduct(orderProduct);
-            alert('Zamówienie złożone') 
         }
+
+        setCart([]);
+        alert('Zamówienie złożone') 
     };
 
     return (

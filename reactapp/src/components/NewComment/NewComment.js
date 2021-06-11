@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { createComment } from '../../api/productComments';
 import Button from 'react-bootstrap/Button';
+import { UserContext } from '../../contexts/UserContext';
 import './NewComment.css';
 
 export default function NewComment(props) {
+    const { userId } = useContext(UserContext);
+
     const [contentInput, setContentInput] = useState('');
     const [rateInput, setRateInput] = useState(0);
 
-    const currentUser = JSON.parse(localStorage.getItem('user'));
-    
     const addComment = async () => {
         if (contentInput === '') {
             alert('Komentarz nie może być pusty');
             return;
         }
 
-        const comment = { rate: parseInt(rateInput), content: contentInput, userId: currentUser.id, productId: parseInt(props.productId) };
+        const comment = { rate: parseInt(rateInput), content: contentInput, userId: userId, productId: parseInt(props.productId) };
         await createComment(comment);
         
         props.comments.push(comment);
@@ -23,7 +24,7 @@ export default function NewComment(props) {
         setRateInput(0);
     };
 
-    if (props.comments.filter(comment => comment.userId === currentUser.id).length !== 0)
+    if (props.comments.filter(comment => comment.userId === userId).length !== 0)
         return <></>;
     
     return (

@@ -56,13 +56,13 @@ class ProductCommentsController @Inject()(cc: MessagesControllerComponents, val 
   }
 
   def createForm(): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
-    userRepository.getAll().flatMap(users => {
+    userRepository.getAll.flatMap(users => {
       productRepository.getAll().map(products => Ok(views.html.productcomments.productCommentAdd(ProductCommentForms.CreateForm, users, products)))
     })
   }
 
   def createFormHandle(): Action[AnyContent] = Action.async { implicit request =>
-    userRepository.getAll().flatMap(users => {
+    userRepository.getAll.flatMap(users => {
       productRepository.getAll().flatMap(products => {
         ProductCommentForms.CreateForm.bindFromRequest.fold(
           errorForm => {

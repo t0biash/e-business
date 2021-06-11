@@ -5,7 +5,7 @@
 
 @for(order <- orders) {
     @if(user != null) {
-        <b>@user.username</b>
+        <b>@user.email</b>
     }
     <b>@order.date</b>
     <a href="@controllers.routes.OrdersController.getByIdForm(order.id)">Details</a>

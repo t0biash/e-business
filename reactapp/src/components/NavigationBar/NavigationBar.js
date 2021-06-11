@@ -1,14 +1,19 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import { Link } from 'react-router-dom';
+import { signOut } from '../../api/authentication';
 import './NavigationBar.css';
 
 export default function NavigationBar(props) {
-    const { authenticated, setAuthenticated } = useContext(UserContext);
+    const { authenticated, setAuthenticated, setUserId } = useContext(UserContext);
 
-    const handleLogout = () => {
-        localStorage.clear();
-        setAuthenticated(false);
+    const handleLogout = async () => {
+        const response = await signOut();
+
+        if (response.status === 200) {
+            setAuthenticated(false);
+            setUserId(0);
+        }
     }
 
     if (!authenticated)
@@ -23,15 +28,13 @@ export default function NavigationBar(props) {
             </div>
         );
     else {
-        const user = JSON.parse(localStorage.getItem('user'));
-        
         return (
             <div className='navigation-bar'>
                 <Link to='/' className='brand-logo'>PlayShop</Link>
                 <ul>
                     <li><Link to='/cart'>Koszyk</Link></li>
-                    <li><Link to='/dashboard'>Cześć {user.username}!</Link></li>
-                    { authenticated ? <li><Link to='/login' onClick={handleLogout}>Wyloguj się</Link></li> : <></> }
+                    <li><Link to='/dashboard'>Dashboard</Link></li>
+                    { authenticated ? <li><Link to='/' onClick={handleLogout}>Wyloguj się</Link></li> : <></> }
                 </ul>
             </div>
         );     
