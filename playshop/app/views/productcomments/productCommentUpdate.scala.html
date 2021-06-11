@@ -10,6 +10,7 @@
     <input name="id" id="id" value="@productComment("id").value" type="hidden">
     <input name="userId" id="userId" value="@productComment("userId").value" type="hidden">
     <input name="productId" id="productId" value="@productComment("productId").value" type="hidden">
+    <label>rate</label><br />
     <input type="number" name="rate" id="rate" value="@productComment("rate").value" min="0" max="5">
     @textarea(productComment("content"))
 

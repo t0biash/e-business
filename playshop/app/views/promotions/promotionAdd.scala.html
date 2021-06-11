@@ -7,11 +7,13 @@
 
 @form(routes.PromotionsController.createFormHandle()) {
     @helper.CSRF.formField
+    <label>product</label><br />
     <select name="productId" id="productId">
     @for(product <- products){
         <option value="@product.id">@product.name</option>
     }
-    </select>
+    </select><br />
+    <label>percentage</label><br />
     <input type="number" name="percentage" id="percentage" value="@promotion("percentage").value" min="0" max="100">
     @inputDate(promotion("fromDate"))
     @inputDate(promotion("toDate"))

@@ -4,7 +4,7 @@
 <br/>
 
 @for(category <- categories) {
-    <b>@category.name</b>
+    <strong>@category.name</strong>
     <a href="@controllers.routes.CategoriesController.getByIdForm(category.id)">Details</a>
     <a href="@controllers.routes.CategoriesController.updateForm(category.id)">Edit</a>
     <a href="@controllers.routes.CategoriesController.deleteForm(category.id)">Delete</a><br/>

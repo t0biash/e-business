@@ -6,7 +6,9 @@
 @form(routes.ProductCommentsController.deleteFormHandle()) {
     @helper.CSRF.formField
     <input name="id" id="id" value="@productComment("id").value" type="hidden"><br/>
+    <label>rate</label><br />
     <input type="number" name="rate" id="rate" value="@productComment("rate").value" readonly><br/>
+    <label>content</label><br />
     <textarea name="content" id="content" readonly>@productComment("content").value</textarea>
 
     <div class="buttons">

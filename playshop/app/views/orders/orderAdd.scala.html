@@ -7,6 +7,7 @@
 
 @form(routes.OrdersController.createFormHandle()) {
     @helper.CSRF.formField
+    <label>user</label><br />
     <select name="userId" id="userId">
     @for(user <- users){
         <option value="@user.id">@user.email</option>

@@ -5,12 +5,11 @@
 
 @for(carModel <- carModels) {
     @if(carMake != null) {
-        <b>@carMake.name </b>
+        <strong>@carMake.name </strong>
     }
-    <b>@carModel.name</b>
+    <strong>@carModel.name</strong>
     <a href="@controllers.routes.CarModelsController.getByIdForm(carModel.id)">Details</a>
     <a href="@controllers.routes.CarModelsController.updateForm(carModel.id)">Edit</a>
     <a href="@controllers.routes.CarModelsController.deleteForm(carModel.id)">Delete</a><br/>
 }
     <a href="@controllers.routes.CarModelsController.createForm()">Add</a>
-

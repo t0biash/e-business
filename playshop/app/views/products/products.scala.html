@@ -5,9 +5,9 @@
 
 @for(product <- products) {
     @if(category != null) {
-        <b>@category.name</b>
+        <strong>@category.name</strong>
     }
-    <b>@product.name</b>
+    <strong>@product.name</strong>
     <a href="@controllers.routes.ProductsController.getByIdForm(product.id)">Details</a>
     <a href="@controllers.routes.ProductsController.updateForm(product.id)">Edit</a>
     <a href="@controllers.routes.ProductsController.deleteForm(product.id)">Delete</a><br/>

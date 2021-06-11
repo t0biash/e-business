@@ -4,7 +4,7 @@
 <br/>
 
 @for(payment <- payments) {
-    <b>@payment.amount</b>
+    <strong>@payment.amount</strong>
     <a href="@controllers.routes.PaymentsController.getByIdForm(payment.id)">Details</a>
     <a href="@controllers.routes.PaymentsController.updateForm(payment.id)">Edit</a>
     <a href="@controllers.routes.PaymentsController.deleteForm(payment.id)">Delete</a><br/>

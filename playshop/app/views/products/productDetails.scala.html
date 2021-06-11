@@ -1,11 +1,10 @@
 @(product: Product, partsManufacturer: PartsManufacturer, category: Category, carModel: CarModel, carMake: CarMake)
 
-<b>@product.id</b><br/>
-<b>@category.name</b><br/>
-<b>@partsManufacturer.name</b><br/>
-<b>@product.name</b><br/>
-<b>@product.description</b><br/>
-<b>@product.price</b><br/>
-<b>@carMake.name</b><br />
-<b>@carModel.name</b><br />
-
+<strong>ID: </strong>@product.id<br/>
+<strong>Category: </strong>@category.name<br/>
+<strong>Parts manufacturer: </strong>@partsManufacturer.name<br/>
+<strong>Name: </strong>@product.name<br/>
+<strong>Description: </strong>@product.description<br/>
+<strong>Price: </strong>@product.price<br/>
+<strong>Car make: </strong>@carMake.name<br />
+<strong>Car model: </strong>@carModel.name

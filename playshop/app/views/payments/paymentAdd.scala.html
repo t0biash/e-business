@@ -7,11 +7,13 @@
 
 @form(routes.PaymentsController.createFormHandle(orderId)) {
     @helper.CSRF.formField
+    <label>provider</label><br />
     <select name="provider" id="provider">
     @for(paymentProvider <- paymentProviders){
         <option value="@paymentProvider">@paymentProvider</option>
     }
-    </select>
+    </select><br />
+    <label>amount</label><br />
     <input type="number" name="amount" id="amount" value="@payment("amount").value" min="0">
 
     <div class="buttons">

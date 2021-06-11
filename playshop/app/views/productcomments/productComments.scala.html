@@ -5,9 +5,9 @@
 
 @for(productComment <- productComments) {
     @if(product != null) {
-        <b>@product.name</b>
+        <strong>@product.name</strong>
     }
-    <b>@productComment.content</b>
+    <strong>@productComment.content</strong>
     <a href="@controllers.routes.ProductCommentsController.getByIdForm(productComment.id)">Details</a>
     <a href="@controllers.routes.ProductCommentsController.updateForm(productComment.id)">Edit</a>
     <a href="@controllers.routes.ProductCommentsController.deleteForm(productComment.id)">Delete</a><br/>

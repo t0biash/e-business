@@ -5,12 +5,11 @@
 
 @for(engine <- engines) {
     @if(carModel != null) {
-        <b>@carModel.name </b>
+        <strong>@carModel.name</strong>
     }
-    <b>@engine.engine</b>
+    <strong>@engine.engine</strong>
     <a href="@controllers.routes.EnginesController.getByIdForm(engine.id)">Details</a>
     <a href="@controllers.routes.EnginesController.updateForm(engine.id)">Edit</a>
     <a href="@controllers.routes.EnginesController.deleteForm(engine.id)">Delete</a><br/>
 }
 <a href="@controllers.routes.EnginesController.createForm()">Add</a>
-

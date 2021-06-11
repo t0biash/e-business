@@ -1,10 +1,8 @@
 @(order: Order, user: User, payment: Payment)
 
-<b>ID: </b>@order.id<br/>
-<b>User email: </b>@user.email<br/>
-<b>Date: </b>@order.date<br/>
+<strong>ID: </strong>@order.id<br/>
+<strong>User email: </strong>@user.email<br/>
+<strong>Order date: </strong>@order.date<br/>
 @if(payment != null) {
-    <b>Payment completed: </b>@payment.completed<br/>
+    <strong>Payment completed: </strong>@payment.completed<br/>
 }
-
-

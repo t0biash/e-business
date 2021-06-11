@@ -7,24 +7,28 @@
 
 @form(routes.ProductsController.createFormHandle()) {
     @helper.CSRF.formField
+    <label>category</label><br />
     <select name="categoryId" id="categoryId">
     @for(category <- categories){
         <option value="@category.id">@category.name</option>
     }
     </select><br />
+    <label>parts manufacturer</label><br />
     <select name="partsManufacturerId" id="partsManufacturerId">
     @for(partsManufacturer <- partsManufacturers){
         <option value="@partsManufacturer.id">@partsManufacturer.name</option>
     }
-    </select>
+    </select><br />
     @inputText(product("name"))
     @textarea(product("description"))
-    <label htmlFor="price">Cena </label><input type="number" name="price" id="price" value="@product("price").value" min="0"><br />
+    <label>price</label><br />
+    <input type="number" name="price" id="price" value="@product("price").value" min="0"><br />
+    <label>car model</label><br />
     <select name="carModelId" id="carModelId">
     @for(carModel <- carModels){
         <option value="@carModel.id">@carModel.name</option>
     }
-    </select>
+    </select><br />
 
     <div class="buttons">
         <input type="submit" value="Add Product">

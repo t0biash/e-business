@@ -9,7 +9,7 @@
     @helper.CSRF.formField
     <input name="id" id="id" value="@payment("id").value" type="hidden">
     <input name="provider" id="provider" value="@payment("provider").value" type="hidden">
-    <input type="text" name="provider" id="provider" value="@payment("provider").value" min="0" readonly>
+    <label>amount</label><br />
     <input type="number" name="amount" id="amount" value="@payment("amount").value" min="0" readonly>
     @checkbox(payment("completed"))
 

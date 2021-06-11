@@ -5,11 +5,11 @@
 
 @for(promotion <- promotions) {
     @if(product != null) {
-        <b>@product.name</b>
+        <strong>@product.name</strong>
     }
-    <b>@promotion.percentage %</b>
-    <b>@promotion.fromDate</b>
-    <b>@promotion.toDate</b>
+    <strong>@promotion.percentage%</strong>
+    <strong>@promotion.fromDate</strong>
+    <strong>@promotion.toDate</strong>
     <a href="@controllers.routes.PromotionsController.getByIdForm(promotion.id)">Details</a>
     <a href="@controllers.routes.PromotionsController.updateForm(promotion.id)">Edit</a>
     <a href="@controllers.routes.PromotionsController.deleteForm(promotion.id)">Delete</a><br/>

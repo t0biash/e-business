@@ -7,10 +7,10 @@
 
 @form(routes.PromotionsController.deleteFormHandle()) {
     @helper.CSRF.formField
-    <input name="id" id="id" value="@promotion("id").value" type="hidden"><br />
-    <input name="percentage" id="percentage" value="@promotion("percentage").value" type="number" readonly>
-    <input name="fromDate" id="fromDate" value="@promotion("fromDate").value" type="date" readonly>
-    <input name="toDate" id="toDate" value="@promotion("toDate").value" type="date" readonly>
+    <input name="id" id="id" value="@promotion("id").value" type="hidden">
+    <input name="percentage" id="percentage" value="@promotion("percentage").value" type="number" readonly><br />
+    <input name="fromDate" id="fromDate" value="@promotion("fromDate").value" type="date" readonly><br />
+    <input name="toDate" id="toDate" value="@promotion("toDate").value" type="date" readonly><br />
 
     <div class="buttons">
         <input type="submit" value="Delete Promotion">

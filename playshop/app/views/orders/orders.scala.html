@@ -5,9 +5,9 @@
 
 @for(order <- orders) {
     @if(user != null) {
-        <b>@user.email</b>
+        <strong>@user.email</strong>
     }
-    <b>@order.date</b>
+    <strong>@order.date</strong>
     <a href="@controllers.routes.OrdersController.getByIdForm(order.id)">Details</a>
     <a href="@controllers.routes.OrdersController.updateForm(order.id)">Edit</a>
     <a href="@controllers.routes.OrdersController.deleteForm(order.id)">Delete</a>

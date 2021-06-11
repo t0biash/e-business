@@ -4,7 +4,7 @@
 <br/>
 
 @for(partsManufacturer <- partsManufacturers) {
-    <b>@partsManufacturer.name</b>
+    <strong>@partsManufacturer.name</strong>
     <a href="@controllers.routes.PartsManufacturersController.getByIdForm(partsManufacturer.id)">Details</a>
     <a href="@controllers.routes.PartsManufacturersController.updateForm(partsManufacturer.id)">Edit</a>
     <a href="@controllers.routes.PartsManufacturersController.deleteForm(partsManufacturer.id)">Delete</a><br/>

@@ -8,7 +8,7 @@
 @form(routes.CarModelsController.deleteFormHandle()) {
     @helper.CSRF.formField
     <input name="id" id="id" value="@carModel("id").value" type="hidden" /><br />
-    <input name="name" id="name" value="@carModel("name").value" type="text" readonly />
+    <input name="name" id="name" value="@carModel("name").value" type="text" readonly /><br />
     <input name="year" id="year" value="@carModel("year").value" type="text" readonly />
 
     <div class="buttons">

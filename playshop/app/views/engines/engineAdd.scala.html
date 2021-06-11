@@ -7,6 +7,7 @@
 
 @form(routes.EnginesController.createFormHandle()) {
     @helper.CSRF.formField
+    <label>car model</label><br />
     <select name="carModelId" id="carModelId">
     @for(carModel <- carModels){
         <option value="@carModel.id">@carModel.name</option>
