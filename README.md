@@ -1,0 +1,3 @@
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=t0biash_e-business&metric=bugs)](https://sonarcloud.io/dashboard?id=t0biash_e-business)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=t0biash_e-business&metric=code_smells)](https://sonarcloud.io/dashboard?id=t0biash_e-business)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=t0biash_e-business&metric=security_rating)](https://sonarcloud.io/dashboard?id=t0biash_e-business)
