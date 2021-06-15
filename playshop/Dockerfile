@@ -3,8 +3,9 @@ FROM ubuntu:18.04
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
+RUN apt-get clean
 RUN apt-get update
-RUN apt-get install -y wget vim zip unzip curl
+RUN apt-get install -y wget vim zip unzip curl gnupg
 
 RUN apt-get install -y openjdk-8-jdk
 
