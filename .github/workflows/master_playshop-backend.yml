@@ -30,8 +30,8 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_4e07da6c24df4d31a38de06ce1503bb0 }}/rkrzys/ebusiness_api:${{ github.sha }}
-        file: ./Dockerfile
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_4e07da6c24df4d31a38de06ce1503bb0 }}/ebusiness_api:${{ github.sha }}
+        file: ./playshop/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,4 +48,4 @@ jobs:
         app-name: 'playshop-backend'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_3b731e81e1214bc7b1d4bc9e12eafa60 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_4e07da6c24df4d31a38de06ce1503bb0 }}/rkrzys/ebusiness_api:${{ github.sha }}'
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_4e07da6c24df4d31a38de06ce1503bb0 }}/ebusiness_api:${{ github.sha }}'
