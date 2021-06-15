@@ -30,7 +30,7 @@ export default function Login(props) {
     };
 
     const navigateTo = (url) => {
-        window.location.assign("http://localhost:9000" + url);
+        window.location.assign(`${process.env.REACT_APP_API_URL}` + url);
     };
 
     if (!authenticated)
