@@ -3,11 +3,9 @@ organization := "pl.edu.uj"
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(PlayKeys.playDefaultPort := 8080)
 
 resolvers += Resolver.jcenterRepo
-
-resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
 resolvers += "Akka Snapshot Repository" at "https://repo.akka.io/snapshots/"
 
