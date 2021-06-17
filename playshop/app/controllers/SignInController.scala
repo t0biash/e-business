@@ -25,7 +25,7 @@ class SignInController @Inject()(scc: DefaultSilhouetteControllerComponents, add
       userRepository.retrieve(loginInfo).flatMap {
         case Some(user) =>
           authenticateUser(user)
-            .map(_.withCookies(Cookie(name, value, httpOnly = false), Cookie("user", user.id.toString, httpOnly = false)))
+            .map(_.withCookies(Cookie(name, value, httpOnly = false, secure = true, sameSite = Some(Cookie.SameSite.None)), Cookie("user", user.id.toString, httpOnly = false, secure = true, sameSite = Some(Cookie.SameSite.None))))
         case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
       }
     }.recover {

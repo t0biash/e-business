@@ -27,7 +27,7 @@ class SocialAuthController @Inject()(scc: DefaultSilhouetteControllerComponents,
             result <- authenticatorService.embed(value, Redirect(scala.util.Properties.envOrElse("REACT_APP_URL", "http://localhost:3000")))
           } yield {
             val Token(name, value) = CSRF.getToken.get
-            result.withCookies(Cookie(name, value, httpOnly = false), Cookie("user", user.id.toString, httpOnly = false))
+            result.withCookies(Cookie(name, value, httpOnly = false, secure = true, sameSite = Some(Cookie.SameSite.None)), Cookie("user", user.id.toString, httpOnly = false, secure = true, sameSite = Some(Cookie.SameSite.None)))
           }
         }
       case _ => Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))
