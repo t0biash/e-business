@@ -3,6 +3,7 @@ package controllers
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.impl.providers._
+import play.api.mvc.Cookie.SameSite
 
 import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, Cookie, Request}
@@ -27,7 +28,10 @@ class SocialAuthController @Inject()(scc: DefaultSilhouetteControllerComponents,
             result <- authenticatorService.embed(value, Redirect(scala.util.Properties.envOrElse("REACT_APP_URL", "http://localhost:3000")))
           } yield {
             val Token(name, value) = CSRF.getToken.get
-            result.withCookies(Cookie(name, value, httpOnly = false, secure = true, sameSite = Some(Cookie.SameSite.None)), Cookie("user", user.id.toString, httpOnly = false, secure = true, sameSite = Some(Cookie.SameSite.None)))
+            result.withCookies(Cookie(name, value, httpOnly = false, secure = true, sameSite = Option.apply(SameSite.None)), Cookie("user", user.id.toString, httpOnly = false, secure = true, sameSite = Option.apply(SameSite.None)))
+              .withHeaders(("Access-Control-Allow-Credentials", "true"),
+              ("Access-Control-Allow-Origin", "https://playshop-frontend.azurewebsites.net"),
+              ("Access-Control-Expose-Headers", "csrftoken"), ("csrftoken", value))
           }
         }
       case _ => Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))
