@@ -16,7 +16,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SignInController @Inject()(scc: DefaultSilhouetteControllerComponents, addToken: CSRFAddToken)(implicit ex: ExecutionContext) extends AbstractAuthController(scc) {
-
   def signIn: Action[AnyContent] = addToken(unsecuredAction.async { implicit request: Request[AnyContent] =>
     val json = request.body.asJson.get
     val Token(name, value) = CSRF.getToken.get
@@ -28,9 +27,10 @@ class SignInController @Inject()(scc: DefaultSilhouetteControllerComponents, add
         case Some(user) =>
           authenticateUser(user)
             .map(_.withCookies(Cookie(name, value, httpOnly = false, secure = true, sameSite = Option.apply(SameSite.None)), Cookie("user", user.id.toString, httpOnly = false, secure = true, sameSite = Option.apply(SameSite.None)))
-              .withHeaders(("Access-Control-Allow-Credentials", "true"),
-              ("Access-Control-Allow-Origin", "https://playshop-frontend.azurewebsites.net"),
-              ("Access-Control-Expose-Headers", "csrftoken"), ("csrftoken", value)))
+              .withHeaders(
+                ("Access-Control-Expose-Headers", "csrfToken, userId"),
+                ("csrfToken", CSRF.getToken.get.value),
+                ("userId", user.id.toString)))
         case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
       }
     }.recover {

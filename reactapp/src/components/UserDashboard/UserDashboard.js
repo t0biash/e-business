@@ -12,6 +12,7 @@ export default function UserDashboard(props) {
         if (response.status === 200) {
             setAuthenticated(false);
             setUserId(0);
+	    sessionStorage.clear();
         }
     }
 

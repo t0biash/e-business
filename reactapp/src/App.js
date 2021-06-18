@@ -17,12 +17,25 @@ import PromotionsContextProvider from './contexts/PromotionsContext';
 import { CartContext } from './contexts/CartContext';
 import { UserContext } from './contexts/UserContext';
 import React, { useState } from 'react';
-import Cookies from 'js-cookie';
 import './App.css';
 
 export default function App(props) {
-    const [authenticated, setAuthenticated] = useState(Cookies.get('csrfToken') === undefined ? false : true);
-    const [userId, setUserId] = useState(Cookies.get('user') === undefined ? 0 : parseInt(Cookies.get('user')));
+    let csrfToken = sessionStorage.getItem('csrfToken');
+    if (csrfToken === null) {
+        csrfToken = new URL(window.location.href).searchParams.get('csrfToken');
+        if (csrfToken !== null)
+            sessionStorage.setItem('csrfToken', csrfToken);
+    }
+    
+    let usrId = sessionStorage.getItem('userId');
+    if (usrId === null) {
+        usrId = new URL(window.location.href).searchParams.get('userId');
+        if (usrId !== null)
+            sessionStorage.setItem('userId', usrId);
+    }
+    
+    const [authenticated, setAuthenticated] = useState(csrfToken === null ? false : true);
+    const [userId, setUserId] = useState(usrId === null ? 0 : parseInt(usrId));
 
     const [cart, setCart] = useState([]);
     const addProduct = (product) => setCart([...cart, product]);

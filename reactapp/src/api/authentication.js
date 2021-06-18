@@ -1,5 +1,3 @@
-import Cookies from 'js-cookie';
-
 const signIn = async (data) => {
     return fetch(`${process.env.REACT_APP_API_URL}/signIn`, { 
         method: 'POST',
@@ -11,14 +9,12 @@ const signIn = async (data) => {
 };
 
 const signOut = async () => {
-    const csrfToken = Cookies.get('csrfToken');
-
     return fetch(`${process.env.REACT_APP_API_URL}/signOut`, { 
         method: 'POST',
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
-            'Csrf-Token': csrfToken
+            'Csrf-Token': sessionStorage.getItem('csrfToken')
         }
     });
 };
