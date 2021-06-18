@@ -24,7 +24,7 @@ class SocialAuthController @Inject()(scc: DefaultSilhouetteControllerComponents,
             _ <- authInfoRepository.save(profile.loginInfo, authInfo)
             authenticator <- authenticatorService.create(profile.loginInfo)
             value <- authenticatorService.init(authenticator)
-            result <- authenticatorService.embed(value, Redirect(scala.util.Properties.envOrElse(s"REACT_APP_URL?csrfToken=${CSRF.getToken.get.value}&userId=${user.id}", s"http://localhost:3000?csrfToken=${CSRF.getToken.get.value}&userId=${user.id}")))
+            result <- authenticatorService.embed(value, Redirect(scala.util.Properties.envOrElse("REACT_APP_URL", "http://localhost:3000") + s"?csrfToken=${CSRF.getToken.get.value}&userId=${user.id}"))
           } yield {
             val Token(name, value) = CSRF.getToken.get
             result.withCookies(Cookie(name, value, httpOnly = false, secure = true, sameSite = Option.apply(SameSite.None)), Cookie("user", user.id.toString, httpOnly = false, secure = true, sameSite = Option.apply(SameSite.None)))
