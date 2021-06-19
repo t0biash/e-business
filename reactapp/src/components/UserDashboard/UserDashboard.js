@@ -7,13 +7,11 @@ export default function UserDashboard(props) {
     const { setAuthenticated, setUserId } = useContext(UserContext);
 
     const handleLogout = async () => {
-        const response = await signOut();
+        await signOut();
         
-        if (response.status === 200) {
-            setAuthenticated(false);
-            setUserId(0);
+        setAuthenticated(false);
+        setUserId(0);
 	    sessionStorage.clear();
-        }
     }
 
     return (
