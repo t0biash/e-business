@@ -20,18 +20,20 @@ export default function ProductDetails() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const responseProduct = products.filter(p => p.id === parseInt(productId));
-            const responseCategory = categories.filter(c => c.id === responseProduct.categoryId);
-            const responsePartsManufacturers = partsManufacturers.filter(pm => pm.id === responseProduct.partsManufacturerId);
-            const responseComments = await fetchCommentsByProductId(productId);
-            
-            setCategory(responseCategory);
-            setProduct(responseProduct);
-            setPartsManufacturer(responsePartsManufacturers);
-            setComments(Array.isArray(responseComments) ? responseComments : [responseComments]);
+            if (products.length !== 0 && categories.length !== 0 && partsManufacturers.length !== 0) {
+                const responseProduct = products.filter(p => p.id === parseInt(productId))[0];
+                const responseCategory = categories.filter(c => c.id === responseProduct.categoryId)[0];
+                const responsePartsManufacturers = partsManufacturers.filter(pm => pm.id === responseProduct.partsManufacturerId)[0];
+                const responseComments = await fetchCommentsByProductId(productId);
+                
+                setCategory(responseCategory);
+                setProduct(responseProduct);
+                setPartsManufacturer(responsePartsManufacturers);
+                setComments(Array.isArray(responseComments) ? responseComments : [responseComments]);
+            }
         };
         fetchData();
-    }, [categories, products, partsManufacturers, productId, comments])
+    }, [productId, categories, partsManufacturers, products])
 
 
 
@@ -47,7 +49,7 @@ export default function ProductDetails() {
                     <strong>Producent: </strong>{partsManufacturer.name}<br /><br />
                     <strong>Komentarze:</strong><br />
                     { comments.length !== 0 ? comments.map(comment => <Comment key={comment.id} data={comment} />) : <></> }
-                    { authenticated ? <NewComment productId={productId} comments={comments} /> : <></> }
+                    { authenticated ? <NewComment productId={productId} setComments={setComments} comments={comments} /> : <></> }
                 </div>
             </>
         );

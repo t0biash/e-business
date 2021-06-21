@@ -19,7 +19,7 @@ export default function NewComment(props) {
         const comment = { rate: parseInt(rateInput), content: contentInput, userId: userId, productId: parseInt(props.productId) };
         await createComment(comment);
         
-        props.comments.push(comment);
+        props.setComments([...props.comments, comment]);
         setContentInput('');
         setRateInput(0);
     };
